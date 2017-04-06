@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+
         if (id == R.id.about_me) {
             Intent in = new Intent(this, AboutMe.class);
             startActivity(in);
