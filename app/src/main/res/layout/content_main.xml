@@ -1,20 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="usc.com.uscmaps.example1.shubham.fbsearch.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
     <TextView
+        android:id="@+id/txtViewSearchForKeyword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter a keyword:"/>
+
+
+    <EditText
+        android:id="@+id/editBoxSearchQuery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtViewSearchForKeyword"
+         />
+
+    <Button
+        android:id="@+id/btClear"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="CLEAR"
+        android:layout_below="@+id/editBoxSearchQuery"
 
-</android.support.constraint.ConstraintLayout>
+        />
+
+    <Button
+        android:id="@+id/btSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SEARCH"
+        android:layout_toRightOf="@id/btClear"
+        android:layout_below="@id/editBoxSearchQuery"
+        />
+
+</RelativeLayout>
