@@ -15,47 +15,49 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Shubham on 4/8/17.
+ * Created by Shubham on 4/10/17.
  */
 
-public class ResultsActivity extends AppCompatActivity{
-
-    private ResultActivitySectionsPagerAdapter mResultActivitySectionsPagerAdapter;
-    private ViewPager viewPager;
+public class DetailsActivity extends AppCompatActivity{
     private Context mContext = this;
+    private DetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
+    private ViewPager viewPager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.results_activity_main);
+        setContentView(R.layout.details_activity_main);
 
-        mResultActivitySectionsPagerAdapter = new ResultActivitySectionsPagerAdapter(getSupportFragmentManager());
+        mDetailsActivitySectionsPagerAdapter = new DetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
+        viewPager = (ViewPager) findViewById(R.id.pager_details_activity);
+        viewPager.setAdapter(mDetailsActivitySectionsPagerAdapter);
 
-        // Set up the ViewPager with the sections adapter.
-        viewPager = (ViewPager) findViewById(R.id.pager_result_activity);
-        viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainer);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerDetailsActivity);
         tabLayout.setupWithViewPager(viewPager);
+
 
         // Iterate over all tabs and set the custom view
         for (int i = 0; i < tabLayout.getTabCount(); i++) {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
+            tab.setCustomView(mDetailsActivitySectionsPagerAdapter.getTabView(i));
         }
 
 
-
     }
+
+
+
+
 
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class ResultActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class DetailsActivitySectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public ResultActivitySectionsPagerAdapter(FragmentManager fm) {
+        public DetailsActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -63,38 +65,26 @@ public class ResultsActivity extends AppCompatActivity{
         public Fragment getItem(int position) {
             switch (position){
                 case 0:
-                    return new ResultsFragmentUsers();
-//                    return Tab1Buildings.newInstance();
+                    return new DetailsFragmentAlbums();
                 case 1:
-                return new ResultsFragmentUsers();
-//                    return Tab2Map.newInstance();
-                case 2:
-                    return new ResultsFragmentUsers();
-//                    return Tab3Parking.newInstance();
-                case 3:
-                    return new ResultsFragmentUsers();
-//                    return Tab2Map.newInstance();
-                case 4:
-                    return new ResultsFragmentUsers();
-//                    return Tab3Parking.newInstance();
+                    return new DetailsFragmentPosts();
                 default:
                     return null;
             }
         }
 
         /**
-         * Show 5 total pages.
+         * Show 2 total pages.
          * @return The number of pages you want to display
          */
         @Override
         public int getCount() {
 
-            return 5;
+            return 2;
         }
 
-        private String tabTitles[] = new String[] { "Users", "Pages","Events","Places","Groups" };
-        private int[] imageResId = { R.drawable.users, R.drawable.pages, R.drawable.events,
-                R.drawable.places, R.drawable.groups };
+        private String tabTitles[] = new String[] { "Albums", "Posts"};
+        private int[] imageResId = { R.drawable.albums, R.drawable.posts};
 
 
         /**

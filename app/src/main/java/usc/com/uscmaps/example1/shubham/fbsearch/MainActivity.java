@@ -1,5 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,7 +21,9 @@ import usc.com.uscmaps.example1.shubham.fbsearch.aboutMe.AboutMe;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private String TAG = getClass().getSimpleName();
+//    private String TAG = getClass().getSimpleName();
+    private String TAG = "MainActivity";
+    Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,9 @@ public class MainActivity extends AppCompatActivity
                 }
                 else{
                     //Call AWS for data
+
+                    Intent intent = new Intent(mContext, ResultsActivity.class);
+                    startActivity(intent);
                 }
             }
         });
