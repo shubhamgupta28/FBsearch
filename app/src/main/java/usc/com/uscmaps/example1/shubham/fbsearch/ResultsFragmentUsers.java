@@ -55,7 +55,6 @@ public class ResultsFragmentUsers extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.e(TAG, "2");
 
         View rootView = inflater.inflate(R.layout.results_fragment_users, container, false);
 
@@ -68,9 +67,7 @@ public class ResultsFragmentUsers extends Fragment {
 
         /**
          * this block is for checking the number of pages
-         * ====================================================
          */
-
         int val = TOTAL_LIST_ITEMS % 2;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
@@ -101,6 +98,7 @@ public class ResultsFragmentUsers extends Fragment {
                 CheckEnable();
             }
         });
+
 //        The basic arrayadapter for a Listview
 //        // Defined Array values to show in ListView
 //        String[] values = new String[] { "Android List View",

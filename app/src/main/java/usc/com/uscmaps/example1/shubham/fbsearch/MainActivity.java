@@ -14,15 +14,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.aboutMe.AboutMe;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.GetAsyncTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-//    private String TAG = getClass().getSimpleName();
-    private String TAG = "MainActivity";
+    private String TAG = getClass().getSimpleName();
+//    private String TAG = "MainActivity";
     Context mContext = this;
 
     @Override
@@ -72,6 +74,18 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+        double lat = 40.712774, lon = -74.006091;
+        String units = "imperial";
+        String APP_ID = "212a21c6bfd9566936db301b5b629460";
+        String url = String.format("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=%s&appid=%s",
+                lat, lon, units, APP_ID);
+
+        TextView textView = (TextView) findViewById(R.id.textView);
+        new GetAsyncTask(textView).execute(url);
+
+
     }
 
     @Override
@@ -118,24 +132,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(in);
 
         }
-
-
-//        else if (id == R.id.nav_gallery){
-//
-//        }
-
-
-
-
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -29,7 +29,6 @@
         android:layout_height="wrap_content"
         android:text="CLEAR"
         android:layout_below="@+id/editBoxSearchQuery"
-
         />
 
     <Button
@@ -40,5 +39,16 @@
         android:layout_toRightOf="@id/btClear"
         android:layout_below="@id/editBoxSearchQuery"
         />
+
+
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:text="Getting Weather..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="28sp"/>
 
 </RelativeLayout>
