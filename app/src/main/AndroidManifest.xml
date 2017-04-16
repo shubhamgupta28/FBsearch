@@ -58,6 +58,8 @@
             android:parentActivityName=".DetailsActivity"
             android:label="Post To Facebook"/>
 
+        <activity android:name=".FacebookActivity"/>
+
 
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider456386888038212"

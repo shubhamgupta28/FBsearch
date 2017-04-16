@@ -2,7 +2,6 @@ package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -19,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.share.widget.ShareButton;
-
 /**
  * Created by Shubham on 4/10/17.
  */
@@ -30,26 +27,10 @@ public class DetailsActivity extends AppCompatActivity {
     private DetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
     private ViewPager viewPager;
 
-
-    // share button
-    private ShareButton shareButton;
-    //image
-    private Bitmap image;
-    //counter
-    private int counter = 0;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity_main);
-//        FacebookSdk.sdkInitialize(getApplicationContext());
-//        shareButton = (ShareButton) findViewById(R.id.share_btn1);
-//        shareButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View view) {
-//                Toast.makeText(getApplicationContext(), "ShareOnFB", Toast.LENGTH_SHORT).show();
-//                postPicture();
-//            }
-//        });
 
         mDetailsActivitySectionsPagerAdapter = new DetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager_details_activity);
@@ -65,9 +46,16 @@ public class DetailsActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(mDetailsActivitySectionsPagerAdapter.getTabView(i));
         }
-
-
     }
+
+//    @Override
+//    public void onBackPressed() {
+//
+////        super.onBackPressed();
+//        finish();
+////        getFragmentManager().popBackStack();
+//
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -127,7 +115,6 @@ public class DetailsActivity extends AppCompatActivity {
          */
         @Override
         public int getCount() {
-
             return 2;
         }
 

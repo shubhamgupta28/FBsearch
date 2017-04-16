@@ -2,6 +2,7 @@ package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,6 +18,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.login.LoginManager;
+
 import usc.com.uscmaps.example1.shubham.fbsearch.aboutMe.AboutMe;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.GetAsyncTask;
 
@@ -24,8 +28,16 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String TAG = getClass().getSimpleName();
-//    private String TAG = "MainActivity";
+    //    private String TAG = "MainActivity";
     Context mContext = this;
+    EditText editBox_user_input;
+    Button btClear;
+    Button btSearch;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
+
+    private CallbackManager callbackManager;
+    private LoginManager manager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,36 +46,39 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final EditText editTextFBsearch = (EditText) findViewById(R.id.editBoxSearchQuery);
-        Button btClear = (Button) findViewById(R.id.btClear);
-        Button btSearch = (Button) findViewById(R.id.btSearch);
+        btClear = (Button) findViewById(R.id.btClear);
+        btSearch = (Button) findViewById(R.id.btSearch);
+        editBox_user_input = (EditText) findViewById(R.id.editBoxSearchQuery);
 
         btClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editTextFBsearch.setText("");
+                editBox_user_input.setText("");
             }
         });
 
         btSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String input  = editTextFBsearch.getText().toString();
+                String input = editBox_user_input.getText().toString();
 //                Log.e(TAG, input);
 
-                if(input.length() == 0 || input == null){
+                if (input.length() == 0 || input == null) {
                     Toast.makeText(getApplicationContext(), "Please enter a keyword!", Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     //Call AWS for data
+                    Toast.makeText(getApplicationContext(), "Entered: " + input, Toast.LENGTH_LONG).show();
+
+//                    fetchFacebookData(input);
 
                     Intent intent = new Intent(mContext, ResultsActivity.class);
+                    addToSharedPref(input, "user");
+
+//                    intent.putExtra("userInput", input);
                     startActivity(intent);
                 }
             }
         });
-
-
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -83,10 +98,19 @@ public class MainActivity extends AppCompatActivity
                 lat, lon, units, APP_ID);
 
         TextView textView = (TextView) findViewById(R.id.textView);
+        startActivity(new Intent(this, FacebookActivity.class));
+
         new GetAsyncTask(textView).execute(url);
-
-
     }
+
+
+    private void addToSharedPref(String input, String currTab) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("input", input);
+        editor.putString("active_tab", currTab);
+        editor.apply();
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -125,7 +149,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
         if (id == R.id.about_me) {
             Intent in = new Intent(this, AboutMe.class);

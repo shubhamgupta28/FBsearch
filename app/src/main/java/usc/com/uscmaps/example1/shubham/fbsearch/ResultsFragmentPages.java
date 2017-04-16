@@ -29,14 +29,11 @@ import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAda
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Created by Shubham on 4/9/17.
- * <p>
- * Good example with Async and load more http://www.androidhive.info/2012/03/android-listview-with-load-more-button/
- * <p>
- * ListView working with pagination buttons https://rakhi577.wordpress.com/2013/05/20/listview-pagination-ex-1/
+ * Created by Shubham on 4/14/17.
  */
 
-public class ResultsFragmentUsers extends Fragment {
+public class ResultsFragmentPages extends Fragment {
+
     private ListView listView;
     private final String TAG = getClass().getSimpleName();
 
@@ -78,6 +75,8 @@ public class ResultsFragmentUsers extends Fragment {
 
         fetchFacebookData(userInput);
     }
+
+
 
     @Nullable
     @Override
@@ -135,21 +134,12 @@ public class ResultsFragmentUsers extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.e(TAG, "onItemClick: "+parent.getItemAtPosition(position) + " : "+view +" : "+id);
-                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1));
+//                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 startActivity(intent);
             }
         });
-
         return rootView;
-    }
-
-    private void addToSharedPref(String input) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("selected_listView_item", input);
-        editor.apply();
     }
 
     /**
@@ -191,7 +181,7 @@ public class ResultsFragmentUsers extends Fragment {
                         ArrayList<String> listJSON = new ArrayList<String>();
 
                         try {
-                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
@@ -205,7 +195,6 @@ public class ResultsFragmentUsers extends Fragment {
 
                                 temp.add(data.get("name").toString());
                                 temp.add(data.get("id").toString());
-
 
                                 JSONObject picture = data.getJSONObject("picture");
                                 JSONObject data1 = picture.getJSONObject("data");
@@ -223,6 +212,8 @@ public class ResultsFragmentUsers extends Fragment {
                             Log.e(TAG, "onCompleted: Catch");
                             e.printStackTrace();
                         }
+
+
 //                        Log.e(TAG, "onCompleted: " + 1);
 //                        loadList(0);
                     }
@@ -231,7 +222,7 @@ public class ResultsFragmentUsers extends Fragment {
 //        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
         Bundle parameters1 = new Bundle();
         parameters1.putString("q", input);
-        parameters1.putString("type", "user");
+        parameters1.putString("type", "page");
         parameters1.putString("fields", "id,name,picture.width(700).height(700)");
         request.setParameters(parameters1);
         GraphRequest.executeBatchAsync(request);

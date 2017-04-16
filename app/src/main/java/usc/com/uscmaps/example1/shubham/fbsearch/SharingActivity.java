@@ -6,7 +6,9 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -72,7 +74,13 @@ public class SharingActivity extends AppCompatActivity {
             manager.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
+
+                    final AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                    Log.e(TAG, "SharingActivity access token: "+ accessToken);
+
                     sharePhotoToFacebook();
+                    Toast.makeText(getApplicationContext(), "You shared this post.", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
 
                 @Override

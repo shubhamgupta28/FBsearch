@@ -36,13 +36,15 @@ public class DetailsFragmentAlbums extends Fragment {
         ExpandableListView listView = (ExpandableListView) rootview.findViewById(R.id.expandableListView_details);
         MyExpandableListAdapter adapter = new MyExpandableListAdapter(this.getActivity(), groups);
         listView.setAdapter(adapter);
-
         return rootview;
     }
 
+    String[] groupName = {"Timeline Photos","Cover Photos","Mobile Uploads","Profile Pictures"
+            ,"CRS-2 Mission Photo Gallery" };
+
     private void createData() {
         for (int j = 0; j < 5; j++) {
-            Group group = new Group("Timeline Photos");
+            Group group = new Group(groupName[j]);
             for (int i = 0; i <= 1; i++) {
                 group.children.add("Sub Item" + i);
             }
