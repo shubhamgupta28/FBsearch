@@ -9,6 +9,16 @@ public class Posts {
     private String created_time;
     private String header;
 
+    public String getProfile_image() {
+        return profile_image;
+    }
+
+    public void setProfile_image(String profile_image) {
+        this.profile_image = profile_image;
+    }
+
+    private String profile_image;
+
     public String getMessage() {
         return message;
     }
@@ -31,5 +41,14 @@ public class Posts {
 
     public void setHeader(String header) {
         this.header = header;
+    }
+
+    @Override
+    public String toString() {
+        return "Posts{" +
+                "message='" + message + '\'' +
+                ", created_time='" + created_time + '\'' +
+                ", header='" + header + '\'' +
+                '}';
     }
 }

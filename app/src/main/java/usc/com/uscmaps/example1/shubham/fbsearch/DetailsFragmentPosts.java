@@ -15,12 +15,14 @@ import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.DetailsFargmentPostsAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.models.Posts;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -35,6 +37,7 @@ public class DetailsFragmentPosts extends Fragment {
 
     ListView listViewPosts;
     Context cont;
+    String userInput;
 
     // Defined Array values to show in ListView
     String[] values = new String[]{"Android List View",
@@ -50,6 +53,11 @@ public class DetailsFragmentPosts extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         cont = this.getActivity();
+
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+         userInput = prefs.getString("input", "No name defined");
+
         super.onCreate(savedInstanceState);
     }
 
@@ -64,18 +72,7 @@ public class DetailsFragmentPosts extends Fragment {
 
 
 
-        DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, new ArrayList( Arrays.asList( new String[]{"Android List View",
-                "Adapter implementation",
-                "Simple List View In Android",
-                "Create List View Android",
-                "Android Example",
-                "List View Source Code",
-                "List View Array Adapter",
-                "Android Example List View"} ) ));
-        listViewPosts.setAdapter(adapter);
-
-
-        listViewPosts.setAdapter(adapter);
+        fetchFacebookData();
 
         return rootView;
 
@@ -84,8 +81,6 @@ public class DetailsFragmentPosts extends Fragment {
 
     /**
      * Facebook Async method to get JSON
-     *
-     *
      */
     private void fetchFacebookData() {
 
@@ -123,44 +118,50 @@ public class DetailsFragmentPosts extends Fragment {
                     @Override
                     public void onCompleted(GraphResponse response) {
 
-                        ArrayList<String> listJSON = new ArrayList<String>();
+                        ArrayList<Posts> postslistJSON = new ArrayList<>();
 
                         try {
                             Log.e(TAG, "onCompleted graphresponse2: " + response);
                             Log.e(TAG, "onCompleted graphresponse2: " + response.getJSONObject());
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
                             Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("posts"));
                             Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("posts").getJSONArray("data").length());
 
-//                            int lengthJSON = response.getJSONObject().getJSONArray("data").length();
-//                            for (int i = 0; i < lengthJSON; i++) {
-//                                ArrayList<String> temp = new ArrayList<String>();
-//
-//                                JSONObject data = response.getJSONObject().getJSONArray("data").getJSONObject(i);
-////                                Log.e(TAG, "onCompleted: " + data.get("name"));
-//
-//                                temp.add(data.get("name").toString());
-//                                temp.add(data.get("id").toString());
-//
-//
-//                                JSONObject picture = data.getJSONObject("picture");
-//                                JSONObject data1 = picture.getJSONObject("data");
-////                                Log.e(TAG, "onCompleted: " + data1.get("height"));
-//                                temp.add(data1.get("url").toString());
-//
-//                                resultsList.add(temp);
-//                            }
 
-////                            Log.e(TAG, "onCompleted: " + resultsList);
-//                            ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
-//                            listView.setAdapter(adapter);
+                            JSONObject imageJSON = response.getJSONObject().getJSONObject("picture").getJSONObject("data");
+                            Log.e(TAG, "onCompletedqwe23e23rwq23qwer2w: "+imageJSON.getString("url") );
+
+
+                            /**
+                             * Extract the posts
+                             */
+                            JSONArray data = response.getJSONObject().getJSONObject("posts").getJSONArray("data");
+                            int lengthJSON = response.getJSONObject().getJSONObject("posts").getJSONArray("data").length();
+
+                            for (int i = 0; i < lengthJSON; i++) {
+//                                ArrayList<String> temp = new ArrayList<String>();
+                                Posts currPostObject = new Posts();
+//
+                                JSONObject currPostJSON = data.getJSONObject(i);
+
+                                currPostObject.setCreated_time(currPostJSON.getString("created_time"));
+                                currPostObject.setHeader(userInput);
+                                currPostObject.setMessage(currPostJSON.getString("message"));
+                                currPostObject.setProfile_image(imageJSON.getString("url"));
+
+
+                                postslistJSON.add(currPostObject);
+                                Log.e(TAG, "onCompleted: "+currPostObject );
+
+                            }
+
+//                            Log.e(TAG, "onCompleted12e12e12e: " + postslistJSON);
+                            DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, postslistJSON);
+                            listViewPosts.setAdapter(adapter);
 
                         } catch (JSONException e) {
                             Log.e(TAG, "onCompleted: Catch");
                             Log.e(TAG, "exception" , e);
                         }
-//                        Log.e(TAG, "onCompleted: " + 1);
-//                        loadList(0);
                     }
                 });
 
