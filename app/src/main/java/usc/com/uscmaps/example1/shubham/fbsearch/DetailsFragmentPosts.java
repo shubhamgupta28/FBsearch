@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -33,31 +34,13 @@ import static android.content.Context.MODE_PRIVATE;
 public class DetailsFragmentPosts extends Fragment {
     private final String TAG = getClass().getSimpleName();
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-
-
-    ListView listViewPosts;
-    Context cont;
-    String userInput;
-
-    // Defined Array values to show in ListView
-    String[] values = new String[]{"Android List View",
-            "Adapter implementation",
-            "Simple List View In Android",
-            "Create List View Android",
-            "Android Example",
-            "List View Source Code",
-            "List View Array Adapter",
-            "Android Example List View"
-    };
+    private ListView listViewPosts;
+    private TextView txtViewNoneFound;
+    private Context cont;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         cont = this.getActivity();
-
-
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-         userInput = prefs.getString("input", "No name defined");
-
         super.onCreate(savedInstanceState);
     }
 
@@ -67,52 +50,21 @@ public class DetailsFragmentPosts extends Fragment {
         View rootView = inflater.inflate(R.layout.details_fragment_posts, container, false);
 
         listViewPosts = (ListView) rootView.findViewById(R.id.listView_details_posts);
-//        ArrayAdapter<String> tempAdapter = new ArrayAdapter<String>(this.getContext(),
-//                android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-
-
+        txtViewNoneFound = (TextView) rootView.findViewById(R.id.txtView_no_posts_found);
         fetchFacebookData();
-
         return rootView;
-
     }
-
 
     /**
      * Facebook Async method to get JSON
      */
     private void fetchFacebookData() {
-
         final Context cont = this.getActivity();
-//
-//        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: "+ accessToken);
-//
-//        GraphRequest request = GraphRequest.newMeRequest(
-//            accessToken, new GraphRequest.GraphJSONObjectCallback() {
-//                @Override
-//                public void onCompleted(JSONObject me, GraphResponse response) {
-//                    Log.e(TAG, "onCompleted: "+me );
-//                    Log.e(TAG, "onCompleted graphresponse: "+response );
-//                }
-//            });
-//        Bundle parameters = new Bundle();
-//        parameters.putString("q", "usc");
-//        parameters.putString("type", "user");
-//        request.setParameters(parameters);
-//        GraphRequest.executeBatchAsync(request);
-
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userID = prefs.getString("selected_listView_item", "No name defined");
-        Log.e(TAG, "fetchFacebookData: "+userID );
+//        Log.e(TAG, "fetchFacebookData: "+userID );
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: " + accessToken + " ,input: " + input);
-
-        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
-
-        userID = "124984464200434";
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 accessToken, "/"+userID, new GraphRequest.Callback() {
                     @Override
@@ -120,43 +72,39 @@ public class DetailsFragmentPosts extends Fragment {
 
                         ArrayList<Posts> postslistJSON = new ArrayList<>();
 
+                        /**
+                         * Extract the posts
+                         */
                         try {
-                            Log.e(TAG, "onCompleted graphresponse2: " + response);
-                            Log.e(TAG, "onCompleted graphresponse2: " + response.getJSONObject());
-                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("posts"));
-                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("posts").getJSONArray("data").length());
-
-
                             JSONObject imageJSON = response.getJSONObject().getJSONObject("picture").getJSONObject("data");
-                            Log.e(TAG, "onCompletedqwe23e23rwq23qwer2w: "+imageJSON.getString("url") );
 
+                            if(!response.getJSONObject().has("posts")){
+                                txtViewNoneFound.setVisibility(View.VISIBLE);
+                                listViewPosts.setVisibility(View.GONE);
+                            } else {
+                                JSONArray data = response.getJSONObject().getJSONObject("posts").getJSONArray("data");
+//                                Log.e(TAG, "onCompleted: " + data);
+                                int lengthJSON = response.getJSONObject().getJSONObject("posts").getJSONArray("data").length();
 
-                            /**
-                             * Extract the posts
-                             */
-                            JSONArray data = response.getJSONObject().getJSONObject("posts").getJSONArray("data");
-                            int lengthJSON = response.getJSONObject().getJSONObject("posts").getJSONArray("data").length();
-
-                            for (int i = 0; i < lengthJSON; i++) {
-//                                ArrayList<String> temp = new ArrayList<String>();
-                                Posts currPostObject = new Posts();
+                                for (int i = 0; i < lengthJSON; i++) {
+                                    Posts currPostObject = new Posts();
 //
-                                JSONObject currPostJSON = data.getJSONObject(i);
+                                    JSONObject currPostJSON = data.getJSONObject(i);
+//                                    Log.e(TAG, "currPostJSON: " + currPostJSON);
 
-                                currPostObject.setCreated_time(currPostJSON.getString("created_time"));
-                                currPostObject.setHeader(userInput);
-                                currPostObject.setMessage(currPostJSON.getString("message"));
-                                currPostObject.setProfile_image(imageJSON.getString("url"));
+                                    currPostObject.setCreated_time(currPostJSON.getString("created_time"));
+                                    currPostObject.setHeader(response.getJSONObject().getString("name"));
+                                    currPostObject.setProfile_image(imageJSON.getString("url"));
+                                    if (currPostJSON.has("message")) {
+                                        currPostObject.setMessage(currPostJSON.getString("message"));
+                                    }
+                                    postslistJSON.add(currPostObject);
 
+                                }
 
-                                postslistJSON.add(currPostObject);
-                                Log.e(TAG, "onCompleted: "+currPostObject );
-
+                                DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, postslistJSON);
+                                listViewPosts.setAdapter(adapter);
                             }
-
-//                            Log.e(TAG, "onCompleted12e12e12e: " + postslistJSON);
-                            DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, postslistJSON);
-                            listViewPosts.setAdapter(adapter);
 
                         } catch (JSONException e) {
                             Log.e(TAG, "onCompleted: Catch");
@@ -167,15 +115,10 @@ public class DetailsFragmentPosts extends Fragment {
 
 //        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
         Bundle parameters1 = new Bundle();
-//        parameters1.putString("q", input);
-//        parameters1.putString("type", "user");
         parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
                 "albums.limit(5){name,photos.limit(2){name, picture}},posts.limit(5)");
         request.setParameters(parameters1);
         GraphRequest.executeBatchAsync(request);
 
     }
-
-
-
 }

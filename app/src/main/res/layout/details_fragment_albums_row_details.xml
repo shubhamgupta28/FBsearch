@@ -2,33 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-    <!--<ImageView-->
-        <!--android:id="@+id/imgView_upper"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="100dp"-->
-        <!--/>-->
     <ImageView
-        android:id="@+id/textView1"
+        android:id="@+id/imgView_subgroup_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/delete_temp"
+        android:layout_margin="10dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         />
-
-    <!--<TextView-->
-        <!--android:id="@+id/textView1"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:drawablePadding="5dp"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:textSize="14sp"-->
-        <!--android:textStyle="bold" >-->
-    <!--</TextView>-->
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#d3d3d3" />
-
 </LinearLayout>

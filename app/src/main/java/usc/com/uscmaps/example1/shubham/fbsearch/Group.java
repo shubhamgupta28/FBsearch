@@ -9,11 +9,18 @@ import java.util.List;
 
 public class Group {
 
-    public String string;
-    public final List<String> children = new ArrayList<String>();
+    public String groupName;
+    public final List<String> imageUrl = new ArrayList<>();
 
     public Group(String string) {
-        this.string = string;
+        this.groupName = string;
     }
 
+    @Override
+    public String toString() {
+        return "Group{" +
+                "groupName='" + groupName + '\'' +
+                ", imageUrl=" + imageUrl +
+                '}';
+    }
 }

@@ -67,7 +67,7 @@ public class ResultsFragmentUsers extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userInput = prefs.getString("input", "No name defined");
         active_tab = prefs.getString("active_tab", "user");
-        Log.e(TAG, "onCreate: " + active_tab);
+//        Log.e(TAG, "onCreate: " + active_tab);
 
 //        Map<String,?> keys = prefs.getAll();
 //
@@ -148,6 +148,7 @@ public class ResultsFragmentUsers extends Fragment {
 
     private void addToSharedPref(String input) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        Log.e(TAG, "addToSharedPref: "+input );
         editor.putString("selected_listView_item", input);
         editor.apply();
     }
@@ -179,8 +180,6 @@ public class ResultsFragmentUsers extends Fragment {
 //        GraphRequest.executeBatchAsync(request);
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: " + accessToken + " ,input: " + input);
-
         final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
         GraphRequest request = GraphRequest.newGraphPathRequest(
@@ -188,10 +187,10 @@ public class ResultsFragmentUsers extends Fragment {
                     @Override
                     public void onCompleted(GraphResponse response) {
 
-                        ArrayList<String> listJSON = new ArrayList<String>();
+//                        ArrayList<String> listJSON = new ArrayList<String>();
 
                         try {
-                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));

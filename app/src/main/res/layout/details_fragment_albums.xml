@@ -7,7 +7,20 @@
     <ExpandableListView
         android:id="@+id/expandableListView_details"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
     </ExpandableListView>
+
+    <TextView
+        android:id="@+id/txtView_no_albums_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Albums Found"
+        android:textSize="35dp"
+        android:layout_margin="20dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

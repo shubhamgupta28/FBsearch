@@ -35,16 +35,16 @@ public class ResultsActivity extends AppCompatActivity {
         setContentView(R.layout.results_activity_main);
 
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                newString = null;
-            } else {
-                newString = extras.getString("userInput");
-            }
-        } else {
-            newString = (String) savedInstanceState.getSerializable("userInput");
-        }
+//        if (savedInstanceState == null) {
+//            Bundle extras = getIntent().getExtras();
+//            if (extras == null) {
+//                newString = null;
+//            } else {
+//                newString = extras.getString("userInput");
+//            }
+//        } else {
+//            newString = (String) savedInstanceState.getSerializable("userInput");
+//        }
 
 //        bundleForFragment = new Bundle();
 //        bundleForFragment.putString("userInput", newString);
@@ -58,43 +58,6 @@ public class ResultsActivity extends AppCompatActivity {
         viewPager.setOffscreenPageLimit(2);
 //        viewPager.setCurrentItem(0);
 
-//        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//                switch (position) {
-//                    case 0:
-//                        Log.e(TAG, "onPageSelected: 1" );
-//                        addToSharedPref("user");
-//                        break;
-//                    case 1:
-//                        Log.e(TAG, "onPageSelected: 2" );
-//                        addToSharedPref("page");
-//                        break;
-//                    case 2:
-//                        Log.e(TAG, "onPageSelected: 3" );
-//                        addToSharedPref("event");
-//                        break;
-//                    case 3:
-//                        Log.e(TAG, "onPageSelected: 4" );
-//                        addToSharedPref("place");
-//                        break;
-//                    case 4:
-//                        Log.e(TAG, "onPageSelected: 5" );
-//                        addToSharedPref("group");
-//                        break;
-//                }
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainer);
         tabLayout.setupWithViewPager(viewPager);

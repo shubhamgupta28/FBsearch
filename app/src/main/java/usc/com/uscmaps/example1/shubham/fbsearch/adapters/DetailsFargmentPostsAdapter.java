@@ -3,7 +3,6 @@ package usc.com.uscmaps.example1.shubham.fbsearch.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +43,10 @@ public class DetailsFargmentPostsAdapter extends ArrayAdapter<Posts> {
         TextView timeStamp = (TextView) rowView.findViewById(R.id.timestamp_posts);
         TextView content = (TextView) rowView.findViewById(R.id.content_posts);
 
-        Log.e("ufyjgkbvklhijhvj", "getView: "+values );
-        for(int i=0;i<values.size();i++){
-            Log.e("fgjhkjgfdghjk", "getView: "+ values.get(i));
-        }
+//        Log.e("ufyjgkbvklhijhvj", "getView: "+values );
+//        for(int i=0;i<values.size();i++){
+//            Log.e("fgjhkjgfdghjk", "getView: "+ values.get(i));
+//        }
 
 //        ArrayList<Posts> curr = values.get(position);
 //        textView.setText(curr.get(0));

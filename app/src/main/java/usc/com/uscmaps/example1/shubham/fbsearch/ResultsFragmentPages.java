@@ -64,14 +64,7 @@ public class ResultsFragmentPages extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userInput = prefs.getString("input", "No name defined");
         active_tab = prefs.getString("active_tab", "user");
-        Log.e(TAG, "onCreate: " + active_tab);
-
-//        Map<String,?> keys = prefs.getAll();
-//
-//        for(Map.Entry<String,?> entry : keys.entrySet()){
-//            Log.e("map values",entry.getKey() + ": " +
-//                    entry.getValue().toString());
-//        }
+//        Log.e(TAG, "onCreate: " + active_tab);
 
         fetchFacebookData(userInput);
     }
@@ -135,11 +128,24 @@ public class ResultsFragmentPages extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+//                startActivity(intent);
+//
+
+                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
+                addToSharedPref(arr_temp.get(1));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 startActivity(intent);
             }
         });
         return rootView;
+    }
+
+    private void addToSharedPref(String input) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        Log.e(TAG, "addToSharedPref: "+input );
+        editor.putString("selected_listView_item", input);
+        editor.apply();
     }
 
     /**
@@ -150,26 +156,7 @@ public class ResultsFragmentPages extends Fragment {
     private void fetchFacebookData(String input) {
 
         final Context cont = this.getActivity();
-//
-//        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: "+ accessToken);
-//
-//        GraphRequest request = GraphRequest.newMeRequest(
-//            accessToken, new GraphRequest.GraphJSONObjectCallback() {
-//                @Override
-//                public void onCompleted(JSONObject me, GraphResponse response) {
-//                    Log.e(TAG, "onCompleted: "+me );
-//                    Log.e(TAG, "onCompleted graphresponse: "+response );
-//                }
-//            });
-//        Bundle parameters = new Bundle();
-//        parameters.putString("q", "usc");
-//        parameters.putString("type", "user");
-//        request.setParameters(parameters);
-//        GraphRequest.executeBatchAsync(request);
-
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: " + accessToken + " ,input: " + input);
 
         final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
@@ -181,24 +168,17 @@ public class ResultsFragmentPages extends Fragment {
                         ArrayList<String> listJSON = new ArrayList<String>();
 
                         try {
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
-
                             int lengthJSON = response.getJSONObject().getJSONArray("data").length();
                             for (int i = 0; i < lengthJSON; i++) {
                                 ArrayList<String> temp = new ArrayList<String>();
 
                                 JSONObject data = response.getJSONObject().getJSONArray("data").getJSONObject(i);
-//                                Log.e(TAG, "onCompleted: " + data.get("name"));
 
                                 temp.add(data.get("name").toString());
                                 temp.add(data.get("id").toString());
 
                                 JSONObject picture = data.getJSONObject("picture");
                                 JSONObject data1 = picture.getJSONObject("data");
-//                                Log.e(TAG, "onCompleted: " + data1.get("height"));
                                 temp.add(data1.get("url").toString());
 
                                 resultsList.add(temp);
@@ -213,9 +193,6 @@ public class ResultsFragmentPages extends Fragment {
                             e.printStackTrace();
                         }
 
-
-//                        Log.e(TAG, "onCompleted: " + 1);
-//                        loadList(0);
                     }
                 });
 

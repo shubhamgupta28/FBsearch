@@ -6,9 +6,20 @@
     <ListView
         android:id="@+id/listView_details_posts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        >
     </ListView>
+
+    <TextView
+        android:id="@+id/txtView_no_posts_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="No Posts Found"
+        android:textSize="35dp"
+        android:layout_margin="20dp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        />
 
 </LinearLayout>
