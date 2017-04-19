@@ -15,16 +15,14 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -52,6 +50,7 @@ public class ResultsFragmentUsers extends Fragment {
 
     public int TOTAL_LIST_ITEMS = 25;
     public int NUM_ITEMS_PAGE = 10;
+    String userInput;
 
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
@@ -65,7 +64,7 @@ public class ResultsFragmentUsers extends Fragment {
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String userInput = prefs.getString("input", "No name defined");
+        userInput = prefs.getString("input", "No name defined");
         active_tab = prefs.getString("active_tab", "user");
 //        Log.e(TAG, "onCreate: " + active_tab);
 
@@ -148,7 +147,7 @@ public class ResultsFragmentUsers extends Fragment {
 
     private void addToSharedPref(String input) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        Log.e(TAG, "addToSharedPref: "+input );
+        Log.e(TAG, "addToSharedPref: " + input);
         editor.putString("selected_listView_item", input);
         editor.apply();
     }
@@ -179,61 +178,70 @@ public class ResultsFragmentUsers extends Fragment {
 //        request.setParameters(parameters);
 //        GraphRequest.executeBatchAsync(request);
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
         final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                accessToken, "/search", new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
 
-//                        ArrayList<String> listJSON = new ArrayList<String>();
-
-                        try {
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=user", userInput);
+        HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
+            @Override
+            public void processFinish(JSONObject response) {
+                try {
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
 
-                            int lengthJSON = response.getJSONObject().getJSONArray("data").length();
-                            for (int i = 0; i < lengthJSON; i++) {
-                                ArrayList<String> temp = new ArrayList<String>();
+                    int lengthJSON = response.getJSONArray("data").length();
+                    for (int i = 0; i < lengthJSON; i++) {
+                        ArrayList<String> temp = new ArrayList<>();
 
-                                JSONObject data = response.getJSONObject().getJSONArray("data").getJSONObject(i);
-//                                Log.e(TAG, "onCompleted: " + data.get("name"));
+                        JSONObject data = response.getJSONArray("data").getJSONObject(i);
+                        temp.add(data.get("name").toString());
+                        temp.add(data.get("id").toString());
 
-                                temp.add(data.get("name").toString());
-                                temp.add(data.get("id").toString());
-
-
-                                JSONObject picture = data.getJSONObject("picture");
-                                JSONObject data1 = picture.getJSONObject("data");
+                        JSONObject picture = data.getJSONObject("picture");
+                        JSONObject data1 = picture.getJSONObject("data");
 //                                Log.e(TAG, "onCompleted: " + data1.get("height"));
-                                temp.add(data1.get("url").toString());
+                        temp.add(data1.get("url").toString());
 
-                                resultsList.add(temp);
-                            }
-
-//                            Log.e(TAG, "onCompleted: " + resultsList);
-                            ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
-                            listView.setAdapter(adapter);
-
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCompleted: Catch");
-                            e.printStackTrace();
-                        }
-//                        Log.e(TAG, "onCompleted: " + 1);
-//                        loadList(0);
+                        resultsList.add(temp);
                     }
-                });
+                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+                    listView.setAdapter(adapter);
 
-//        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
-        Bundle parameters1 = new Bundle();
-        parameters1.putString("q", input);
-        parameters1.putString("type", "user");
-        parameters1.putString("fields", "id,name,picture.width(700).height(700)");
-        request.setParameters(parameters1);
-        GraphRequest.executeBatchAsync(request);
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCompleted: Catch");
+                    e.printStackTrace();
+                }
+            }
+        });
+        httpConn.execute(url);
+
+
+//        GraphRequest request = GraphRequest.newGraphPathRequest(
+//                accessToken, "/search", new GraphRequest.Callback() {
+//                    @Override
+//                    public void onCompleted(GraphResponse response) {
+//                        Log.e(TAG, "onCompleted: " + response);
+//
+////                        ArrayList<String> listJSON = new ArrayList<String>();
+//
+//
+////                        Log.e(TAG, "onCompleted: " + 1);
+////                        loadList(0);
+//                    }
+//                });
+//
+////        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
+//        Bundle parameters1 = new Bundle();
+//        parameters1.putString("q", input);
+//        parameters1.putString("type", "user");
+//        parameters1.putString("fields", "id,name,picture.width(700).height(700)");
+//        Log.e(TAG, "fetchFacebookData: " + parameters1);
+//        request.setParameters(parameters1);
+//        GraphRequest.executeBatchAsync(request);
 
     }
 

@@ -132,13 +132,17 @@ public class DetailsFragmentAlbums extends Fragment {
 
                                     Group group = new Group(data.get("name").toString());
 
-                                    JSONArray inDataAlbums = data.getJSONObject("photos").getJSONArray("data");
-                                    int subGroupLength = data.getJSONObject("photos").getJSONArray("data").length();
-                                    for (int j = 0; j < subGroupLength; j++) {
-                                        JSONObject currImage = inDataAlbums.getJSONObject(j);
-                                        group.imageUrl.add(currImage.get("picture").toString());
+                                    if(data.has("photos")){
+                                        JSONArray inDataAlbums = data.getJSONObject("photos").getJSONArray("data");
+                                        int subGroupLength = data.getJSONObject("photos").getJSONArray("data").length();
+                                        for (int j = 0; j < subGroupLength; j++) {
+                                            JSONObject currImage = inDataAlbums.getJSONObject(j);
+                                            group.imageUrl.add(currImage.get("picture").toString());
+                                        }
+
                                     }
                                     groups.append(i, group);
+
                                 }
 
                                 MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);

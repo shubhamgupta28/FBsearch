@@ -69,6 +69,7 @@ public class DetailsFragmentPosts extends Fragment {
                 accessToken, "/"+userID, new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
+//                        Log.e(TAG, "onCompleted: "+response );
 
                         ArrayList<Posts> postslistJSON = new ArrayList<>();
 

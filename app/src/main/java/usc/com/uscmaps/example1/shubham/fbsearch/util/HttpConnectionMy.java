@@ -2,7 +2,6 @@ package usc.com.uscmaps.example1.shubham.fbsearch.util;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,18 +18,21 @@ import java.net.URL;
  * Created by Shubham on 4/10/17.
  */
 
-public class GetAsyncTask extends AsyncTask<String, Void , String>{
-    private TextView textView;
+public class HttpConnectionMy extends AsyncTask<String, Object, JSONObject> {
+    private final String TAG = getClass().getSimpleName();
+    public AsyncResponse delegate = null;
 
-    public GetAsyncTask(TextView textView) {
-        this.textView = textView;
+
+    public HttpConnectionMy(AsyncResponse async){
+        this.delegate = async;
+
     }
 
     @Override
-    protected String doInBackground(String... strings) {
-        String weather = "UNDEFINED";
+    protected JSONObject doInBackground(String... strings) {
+        JSONObject topLevel = null;
         try {
-            URL url = new URL(strings[0]);
+            URL url = new URL((String) strings[0]);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
             InputStream stream = new BufferedInputStream(urlConnection.getInputStream());
@@ -41,21 +43,23 @@ public class GetAsyncTask extends AsyncTask<String, Void , String>{
             while ((inputString = bufferedReader.readLine()) != null) {
                 builder.append(inputString);
             }
-            Log.e("Async", ""+builder);
+//            Log.e(TAG, "builder: " + builder);
 
-            JSONObject topLevel = new JSONObject(builder.toString());
-            JSONObject main = topLevel.getJSONObject("main");
-            weather = String.valueOf(main.getDouble("temp"));
+            topLevel = new JSONObject(builder.toString());
+//            JSONObject main = topLevel.getJSONObject("main");
+//            weather = String.valueOf(main.getDouble("temp"));
 
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
+            Log.e("Async", "Catch doInBackground");
             e.printStackTrace();
         }
-        return weather;
+        return topLevel;
     }
 
     @Override
-    protected void onPostExecute(String temp) {
-        textView.setText("Current Weather: " + temp);
+    protected void onPostExecute(JSONObject temp) {
+        Log.e(TAG, "onPostExecute: " );
+        delegate.processFinish(temp);
     }
 }

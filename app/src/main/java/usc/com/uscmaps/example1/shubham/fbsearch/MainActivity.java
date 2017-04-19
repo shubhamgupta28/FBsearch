@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,7 +22,6 @@ import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.aboutMe.AboutMe;
-import usc.com.uscmaps.example1.shubham.fbsearch.util.GetAsyncTask;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,13 +44,20 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
 
+//        DONE
         //TODO set tab a little uplifted
         //TODO PUt NUll check for albums like in POsts
+
+
+
+
+
         //TODO change FB SDK to AWS PHP call
         //TODO Set ShareFB page
         //TODO Set Favorites
-        //TODO Set Places and groups tab
+        //TODO Set Places me location
         //TODO set paging in listView Results
+        //TODO issue of data disappearing when tabs changed multiple times
 
 
 
@@ -115,7 +122,9 @@ public class MainActivity extends AppCompatActivity
         TextView textView = (TextView) findViewById(R.id.textView);
         startActivity(new Intent(this, FacebookActivity.class));
 
-        new GetAsyncTask(textView).execute(url);
+
+        Log.e(TAG, "onCreate: "+url );
+//        new HttpConnectionMy(textView).execute(url);
     }
 
 

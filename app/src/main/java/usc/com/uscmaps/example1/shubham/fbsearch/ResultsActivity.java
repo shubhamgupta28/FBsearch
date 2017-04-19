@@ -1,7 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -34,22 +33,6 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_activity_main);
 
-
-//        if (savedInstanceState == null) {
-//            Bundle extras = getIntent().getExtras();
-//            if (extras == null) {
-//                newString = null;
-//            } else {
-//                newString = extras.getString("userInput");
-//            }
-//        } else {
-//            newString = (String) savedInstanceState.getSerializable("userInput");
-//        }
-
-//        bundleForFragment = new Bundle();
-//        bundleForFragment.putString("userInput", newString);
-
-
         mResultActivitySectionsPagerAdapter = new ResultActivitySectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -69,11 +52,11 @@ public class ResultsActivity extends AppCompatActivity {
         }
     }
 
-    private void addToSharedPref(String active_tab) {
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("active_tab", active_tab);
-        editor.commit();
-    }
+//    private void addToSharedPref(String active_tab) {
+//        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+//        editor.putString("active_tab", active_tab);
+//        editor.commit();
+//    }
 
 
     /**
@@ -121,7 +104,7 @@ public class ResultsActivity extends AppCompatActivity {
                     return resultsFragmentUsers4;
 
                 case 4:
-                    Fragment resultsFragmentUsers5 = new ResultsFragmentUsers();
+                    Fragment resultsFragmentUsers5 = new ResultsFragmentGroups();
 //                    resultsFragmentUsers5.setRetainInstance(true);
 //                    Log.e(TAG, "getItem: 5" );
 
