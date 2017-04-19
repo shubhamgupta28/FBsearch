@@ -149,8 +149,9 @@ public class ResultsFragmentPlaces extends Fragment{
         final Context cont = this.getActivity();
         final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=place&center=34.0320676,-118.2896248
 //        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
-        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=event", input);
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=place&center=34.0320676,-118.2896248", input);
         HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
             @Override
             public void processFinish(JSONObject response) {

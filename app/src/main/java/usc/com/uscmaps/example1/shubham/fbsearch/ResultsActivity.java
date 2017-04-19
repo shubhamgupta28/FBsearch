@@ -38,7 +38,7 @@ public class ResultsActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         viewPager = (ViewPager) findViewById(R.id.pager_result_activity);
         viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
-        viewPager.setOffscreenPageLimit(2);
+//        viewPager.setOffscreenPageLimit(2);
 //        viewPager.setCurrentItem(0);
 
 
@@ -96,7 +96,7 @@ public class ResultsActivity extends AppCompatActivity {
                     return resultsFragmentUsers3;
 
                 case 3:
-                    Fragment resultsFragmentUsers4 = new ResultsFragmentUsers();
+                    Fragment resultsFragmentUsers4 = new ResultsFragmentPlaces();
 //                    Log.e(TAG, "getItem: 4" );
 
 

@@ -102,7 +102,7 @@ public class DetailsActivity extends AppCompatActivity {
                 case 0:
                     return new DetailsFragmentAlbums();
                 case 1:
-                    return new DetailsFragmentPosts();
+                    return new DetailsFragmentAlbums();
                 default:
                     return null;
             }

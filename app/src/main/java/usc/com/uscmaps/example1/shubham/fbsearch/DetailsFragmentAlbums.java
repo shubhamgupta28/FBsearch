@@ -99,18 +99,19 @@ public class DetailsFragmentAlbums extends Fragment {
 
         SharedPreferences prefs = mContext.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userID = prefs.getString("selected_listView_item", "No name defined");
-        Log.e(TAG, "fetchFacebookData: "+userID );
+        Log.e(TAG, "fetchFacebookData Albums: "+userID );
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
 //        Log.e(TAG, "fetchFacebookData: " + accessToken + " ,input: " + input);
 
         final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
-//        userID = "353851465130";
+        userID = "353851465130";
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 accessToken, "/"+userID, new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
+                        Log.e(TAG, "onCompleted: "+response );
 
                         ArrayList<String> listJSON = new ArrayList<String>();
 
@@ -159,8 +160,11 @@ public class DetailsFragmentAlbums extends Fragment {
         Bundle parameters1 = new Bundle();
 //        parameters1.putString("q", input);
 //        parameters1.putString("type", "user");
+//        parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
+//                "albums.limit(5){name,photos.limit(2){name, picture}},posts.limit(5)");
+
         parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
-                "albums.limit(5){name,photos.limit(2){name, picture}},posts.limit(5)");
+                "albums.limit(5){name,photos.limit(2){name, picture}}");
         request.setParameters(parameters1);
         GraphRequest.executeBatchAsync(request);
 

@@ -65,7 +65,7 @@ public class ResultsFragmentUsers extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         userInput = prefs.getString("input", "No name defined");
-        active_tab = prefs.getString("active_tab", "user");
+//        active_tab = prefs.getString("active_tab", "user");
 //        Log.e(TAG, "onCreate: " + active_tab);
 
 //        Map<String,?> keys = prefs.getAll();
@@ -136,6 +136,7 @@ public class ResultsFragmentUsers extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.e(TAG, "onItemClick: "+parent.getItemAtPosition(position) + " : "+view +" : "+id);
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
+                Log.e(TAG, "onItemClick: arr_temp"+arr_temp );
                 addToSharedPref(arr_temp.get(1));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 startActivity(intent);

@@ -46,9 +46,7 @@ public class MainActivity extends AppCompatActivity
 
 //        DONE
         //TODO set tab a little uplifted
-        //TODO PUt NUll check for albums like in POsts
-
-
+        //TODO PUt NUll check for albums like in Posts
 
 
 
@@ -58,11 +56,6 @@ public class MainActivity extends AppCompatActivity
         //TODO Set Places me location
         //TODO set paging in listView Results
         //TODO issue of data disappearing when tabs changed multiple times
-
-
-
-
-
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

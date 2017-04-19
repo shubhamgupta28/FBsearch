@@ -62,14 +62,14 @@ public class DetailsFragmentPosts extends Fragment {
         final Context cont = this.getActivity();
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userID = prefs.getString("selected_listView_item", "No name defined");
-//        Log.e(TAG, "fetchFacebookData: "+userID );
+        Log.e(TAG, "fetchFacebookData Posts: "+userID );
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         GraphRequest request = GraphRequest.newGraphPathRequest(
                 accessToken, "/"+userID, new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(GraphResponse response) {
-//                        Log.e(TAG, "onCompleted: "+response );
+                        Log.e(TAG, "onCompleted POSTS: "+response );
 
                         ArrayList<Posts> postslistJSON = new ArrayList<>();
 
@@ -117,7 +117,7 @@ public class DetailsFragmentPosts extends Fragment {
 //        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
         Bundle parameters1 = new Bundle();
         parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
-                "albums.limit(5){name,photos.limit(2){name, picture}},posts.limit(5)");
+                "posts.limit(5)");
         request.setParameters(parameters1);
         GraphRequest.executeBatchAsync(request);
 

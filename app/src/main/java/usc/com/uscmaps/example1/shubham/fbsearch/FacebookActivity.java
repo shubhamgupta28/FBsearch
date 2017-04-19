@@ -38,6 +38,7 @@ public class FacebookActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         List<String> permissionNeeds = Arrays.asList("publish_actions");
+//        List<String> permissionNeeds = Arrays.asList("publish_actions", "user_posts", "user_photos");
 
         //this loginManager helps you eliminate adding a LoginButton to your UI
         manager = LoginManager.getInstance();
