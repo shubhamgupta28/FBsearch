@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -37,27 +36,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class ResultsFragmentUsers extends Fragment {
     private ListView listView;
     private final String TAG = getClass().getSimpleName();
-
     private Button btn_prev;
     private Button btn_next;
-
-    private ArrayList<String> data;
-    ArrayAdapter<String> sd;
-
     private int pageCount;
     private int increment = 0;
-
-
     public int TOTAL_LIST_ITEMS = 25;
     public int NUM_ITEMS_PAGE = 10;
-    String userInput;
-
-
+    private String userInput;
+    private ArrayList<ArrayList<String>> resultsList = null;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public static String active_tab = null;
-
-    static final String[] MOBILE_OS_array =
-            new String[]{"Android", "iOS", "WindowsMobile", "Blackberry"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,7 +76,7 @@ public class ResultsFragmentUsers extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-        data = new ArrayList<>();
+//        data = new ArrayList<>();
 
         /**
          * this block is for checking the number of pages
@@ -126,7 +113,7 @@ public class ResultsFragmentUsers extends Fragment {
         });
 
         /**
-         * The custom adapter, right now being set after Facebook calls
+         * The custom adapter, right now being set after Facebook calls, now being set up in AWS call
          */
 //        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), MOBILE_OS_array);
 //        listView.setAdapter(adapter);
@@ -180,9 +167,8 @@ public class ResultsFragmentUsers extends Fragment {
 //        GraphRequest.executeBatchAsync(request);
 
 //        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
-
+        resultsList = new ArrayList<ArrayList<String>>();
 //        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
         String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=user", userInput);
         HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
@@ -208,9 +194,13 @@ public class ResultsFragmentUsers extends Fragment {
                         temp.add(data1.get("url").toString());
 
                         resultsList.add(temp);
+
                     }
-                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
-                    listView.setAdapter(adapter);
+
+                    loadList(0);
+//                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
+//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");
@@ -266,16 +256,24 @@ public class ResultsFragmentUsers extends Fragment {
      * @param number
      */
     private void loadList(int number) {
-        ArrayList<String> sort = new ArrayList<>();
+        final Context cont = this.getActivity();
+//        Log.e(TAG, "loadList: "+resultsList.size());
+
+        ArrayList<ArrayList<String>> sort = new ArrayList<>();
 
         int start = number * NUM_ITEMS_PAGE;
         for (int i = start; i < (start) + NUM_ITEMS_PAGE; i++) {
-            if (i < data.size()) {
-                sort.add(data.get(i));
+            if (i < resultsList.size()) {
+                sort.add(resultsList.get(i));
             } else {
                 break;
             }
         }
+
+
+//        Log.e(TAG, "processFinish: "+resultsList.size()+1 );
+        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
 //        listView.setAdapter(sd);

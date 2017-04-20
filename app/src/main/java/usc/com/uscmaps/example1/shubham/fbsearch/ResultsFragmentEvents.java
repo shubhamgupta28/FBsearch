@@ -30,8 +30,8 @@ import static android.content.Context.MODE_PRIVATE;
  * Created by Shubham on 4/14/17.
  */
 
-public class ResultsFragmentEvents extends Fragment{
-
+public class ResultsFragmentEvents extends Fragment {
+    ArrayList<ArrayList<String>> resultsList = null;
     ListView listView;
     private final String TAG = getClass().getSimpleName();
 
@@ -155,8 +155,7 @@ public class ResultsFragmentEvents extends Fragment{
      */
     private void fetchFacebookData(String input) {
 
-        final Context cont = this.getActivity();
-        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
+        resultsList = new ArrayList<ArrayList<String>>();
 
 //        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
         String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=event", input);
@@ -184,9 +183,7 @@ public class ResultsFragmentEvents extends Fragment{
 
                         resultsList.add(temp);
                     }
-                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
-                    listView.setAdapter(adapter);
-
+                    loadList(0);
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");
                     e.printStackTrace();
@@ -217,16 +214,21 @@ public class ResultsFragmentEvents extends Fragment{
      * @param number
      */
     private void loadList(int number) {
-        ArrayList<String> sort = new ArrayList<>();
+        final Context cont = this.getActivity();
+
+        ArrayList<ArrayList<String>> sort = new ArrayList<>();
 
         int start = number * NUM_ITEMS_PAGE;
         for (int i = start; i < (start) + NUM_ITEMS_PAGE; i++) {
-            if (i < data.size()) {
-                sort.add(data.get(i));
+            if (i < resultsList.size()) {
+                sort.add(resultsList.get(i));
             } else {
                 break;
             }
         }
+
+        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
 //        listView.setAdapter(sd);

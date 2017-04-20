@@ -47,12 +47,12 @@ public class MainActivity extends AppCompatActivity
         //TODO PUt NUll check for albums like in Posts
         //TODO change FB SDK to AWS PHP call
         //TODO Set ShareFB page
+        //TODO set paging in listView Results
 
 
         //TODO Add Hamburger to Favorties activity, but not to Results
         //TODO Set Favorites
         //TODO Set Places me location
-        //TODO set paging in listView Results
         //TODO issue of data disappearing when tabs changed multiple times
         //TODO Fb shared post displaying wierd, show You shared this post after sharing
 
@@ -81,8 +81,6 @@ public class MainActivity extends AppCompatActivity
                     Toast.makeText(getApplicationContext(), "Please enter a keyword!", Toast.LENGTH_LONG).show();
                 } else {
                     //Call AWS for data
-                    Toast.makeText(getApplicationContext(), "Entered: " + input, Toast.LENGTH_LONG).show();
-
 //                    fetchFacebookData(input);
 
                     Intent intent = new Intent(mContext, ResultsActivity.class);

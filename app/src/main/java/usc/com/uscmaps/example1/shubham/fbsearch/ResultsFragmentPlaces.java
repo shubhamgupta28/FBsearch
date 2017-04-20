@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -33,14 +32,15 @@ import static android.content.Context.MODE_PRIVATE;
 public class ResultsFragmentPlaces extends Fragment{
 
 
+    ArrayList<ArrayList<String>> resultsList= null;
     ListView listView;
     private final String TAG = getClass().getSimpleName();
 
     private Button btn_prev;
     private Button btn_next;
 
-    private ArrayList<String> data;
-    ArrayAdapter<String> sd;
+//    private ArrayList<String> data;
+//    ArrayAdapter<String> sd;
 
     private int pageCount;
     private int increment = 0;
@@ -52,9 +52,6 @@ public class ResultsFragmentPlaces extends Fragment{
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     public static String active_tab = null;
-
-    static final String[] MOBILE_OS_array =
-            new String[]{"Android", "iOS", "WindowsMobile", "Blackberry"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,7 +83,7 @@ public class ResultsFragmentPlaces extends Fragment{
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-        data = new ArrayList<>();
+//        data = new ArrayList<>();
 
         /**
          * this block is for checking the number of pages
@@ -156,8 +153,7 @@ public class ResultsFragmentPlaces extends Fragment{
      */
     private void fetchFacebookData(String input) {
 
-        final Context cont = this.getActivity();
-        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
+        resultsList = new ArrayList<ArrayList<String>>();
 
 //        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=place&center=34.0320676,-118.2896248
 //        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
@@ -186,8 +182,7 @@ public class ResultsFragmentPlaces extends Fragment{
 
                         resultsList.add(temp);
                     }
-                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
-                    listView.setAdapter(adapter);
+                    loadList(0);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");
@@ -219,16 +214,21 @@ public class ResultsFragmentPlaces extends Fragment{
      * @param number
      */
     private void loadList(int number) {
-        ArrayList<String> sort = new ArrayList<>();
+        final Context cont = this.getActivity();
+
+        ArrayList<ArrayList<String>> sort = new ArrayList<>();
 
         int start = number * NUM_ITEMS_PAGE;
         for (int i = start; i < (start) + NUM_ITEMS_PAGE; i++) {
-            if (i < data.size()) {
-                sort.add(data.get(i));
+            if (i < resultsList.size()) {
+                sort.add(resultsList.get(i));
             } else {
                 break;
             }
         }
+
+        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
 //        listView.setAdapter(sd);

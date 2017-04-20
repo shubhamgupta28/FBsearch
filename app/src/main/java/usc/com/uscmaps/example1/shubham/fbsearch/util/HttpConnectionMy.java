@@ -59,7 +59,7 @@ public class HttpConnectionMy extends AsyncTask<String, Object, JSONObject> {
 
     @Override
     protected void onPostExecute(JSONObject temp) {
-        Log.e(TAG, "onPostExecute: " );
+//        Log.e(TAG, "onPostExecute: " );
         delegate.processFinish(temp);
     }
 }
