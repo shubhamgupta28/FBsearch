@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".aboutMe.AboutMe"
+        <activity android:name=".AboutMeActivity"
             android:parentActivityName=".MainActivity"
             android:label="About Me">
 
@@ -60,11 +60,14 @@
 
         <activity android:name=".FacebookActivity"/>
 
-
-
         <provider android:authorities="com.facebook.app.FacebookContentProvider456386888038212"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
+
+        <activity android:name=".FavoritesActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="Favorites"
+            />
 
 
     </application>

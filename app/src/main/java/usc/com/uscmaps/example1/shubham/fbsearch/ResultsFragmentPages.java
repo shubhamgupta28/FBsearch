@@ -131,7 +131,7 @@ public class ResultsFragmentPages extends Fragment {
 //
 
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1));
+                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 startActivity(intent);
             }
@@ -139,10 +139,11 @@ public class ResultsFragmentPages extends Fragment {
         return rootView;
     }
 
-    private void addToSharedPref(String input) {
+    private void addToSharedPref(String userID, String name, String imageUrl) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        Log.e(TAG, "addToSharedPref: "+input );
-        editor.putString("selected_listView_item", input);
+        editor.putString("selected_listView_item", userID);
+        editor.putString("clicked_user_name", name);
+        editor.putString("clicked_user_picture", imageUrl);
         editor.apply();
     }
 

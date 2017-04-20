@@ -14,10 +14,6 @@ import android.view.animation.Animation;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +21,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.MyExpandableListAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -74,99 +72,54 @@ public class DetailsFragmentAlbums extends Fragment {
 
     /**
      * Facebook Async method to get JSON
-     *
      */
     private void fetchFacebookData() {
 
+
         final Context mContext = this.getActivity();
-//
-//        final AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: "+ accessToken);
-//
-//        GraphRequest request = GraphRequest.newMeRequest(
-//            accessToken, new GraphRequest.GraphJSONObjectCallback() {
-//                @Override
-//                public void onCompleted(JSONObject me, GraphResponse response) {
-//                    Log.e(TAG, "onCompleted: "+me );
-//                    Log.e(TAG, "onCompleted graphresponse: "+response );
-//                }
-//            });
-//        Bundle parameters = new Bundle();
-//        parameters.putString("q", "usc");
-//        parameters.putString("type", "user");
-//        request.setParameters(parameters);
-//        GraphRequest.executeBatchAsync(request);
+        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
 
         SharedPreferences prefs = mContext.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userID = prefs.getString("selected_listView_item", "No name defined");
-        Log.e(TAG, "fetchFacebookData Albums: "+userID );
+//        Log.e(TAG, "fetchFacebookData Albums: " + userID);
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-//        Log.e(TAG, "fetchFacebookData: " + accessToken + " ,input: " + input);
 
-        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?id=%s", userID);
+        HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
+            @Override
+            public void processFinish(JSONObject response) {
+                ArrayList<String> listJSON = new ArrayList<String>();
+                try {
+                    if (!response.has("albums")) {
+                        listView.setVisibility(View.GONE);
+                        txtViewNoAlbumFound.setVisibility(View.VISIBLE);
+                    } else {
+                        int lengthJSON = response.getJSONObject("albums").getJSONArray("data").length();
+                        for (int i = 0; i < lengthJSON; i++) {
+                            JSONObject data = response.getJSONObject("albums").getJSONArray("data").getJSONObject(i);
 
-        userID = "353851465130";
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                accessToken, "/"+userID, new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        Log.e(TAG, "onCompleted: "+response );
+                            Group group = new Group(data.get("name").toString());
 
-                        ArrayList<String> listJSON = new ArrayList<String>();
-
-                        try {
-//                            Log.e(TAG, "onCompleted graphresponse2: " + response);
-//                            Log.e(TAG, "onCompleted graphresponse2: " + response.getJSONObject());
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("albums"));
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONObject("albums").getJSONArray("data").length());
-
-                            if(!response.getJSONObject().has("albums")){
-//                                Log.e(TAG, "NO albums: " );
-                                listView.setVisibility(View.GONE);
-                                txtViewNoAlbumFound.setVisibility(View.VISIBLE);
-
-                            }else {
-                                int lengthJSON = response.getJSONObject().getJSONObject("albums").getJSONArray("data").length();
-                                for (int i = 0; i < lengthJSON; i++) {
-                                    JSONObject data = response.getJSONObject().getJSONObject("albums").getJSONArray("data").getJSONObject(i);
-
-                                    Group group = new Group(data.get("name").toString());
-
-                                    if(data.has("photos")){
-                                        JSONArray inDataAlbums = data.getJSONObject("photos").getJSONArray("data");
-                                        int subGroupLength = data.getJSONObject("photos").getJSONArray("data").length();
-                                        for (int j = 0; j < subGroupLength; j++) {
-                                            JSONObject currImage = inDataAlbums.getJSONObject(j);
-                                            group.imageUrl.add(currImage.get("picture").toString());
-                                        }
-
-                                    }
-                                    groups.append(i, group);
-
+                            if (data.has("photos")) {
+                                JSONArray inDataAlbums = data.getJSONObject("photos").getJSONArray("data");
+                                int subGroupLength = data.getJSONObject("photos").getJSONArray("data").length();
+                                for (int j = 0; j < subGroupLength; j++) {
+                                    JSONObject currImage = inDataAlbums.getJSONObject(j);
+                                    group.imageUrl.add(currImage.get("picture").toString());
                                 }
-
-                                MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
-                                listView.setAdapter(adapter);
                             }
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCompleted: Catch");
-                            Log.e(TAG, "exception" , e);
+                            groups.append(i, group);
                         }
+                        MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
+                        listView.setAdapter(adapter);
                     }
-                });
-
-//        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
-        Bundle parameters1 = new Bundle();
-//        parameters1.putString("q", input);
-//        parameters1.putString("type", "user");
-//        parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
-//                "albums.limit(5){name,photos.limit(2){name, picture}},posts.limit(5)");
-
-        parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
-                "albums.limit(5){name,photos.limit(2){name, picture}}");
-        request.setParameters(parameters1);
-        GraphRequest.executeBatchAsync(request);
-
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCompleted: Catch");
+                    e.printStackTrace();
+                }
+            }
+        });
+        httpConn.execute(url);
     }
 }

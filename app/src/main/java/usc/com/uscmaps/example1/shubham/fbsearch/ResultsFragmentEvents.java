@@ -131,11 +131,21 @@ public class ResultsFragmentEvents extends Fragment{
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
+                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
                 startActivity(intent);
             }
         });
         return rootView;
+    }
+
+    private void addToSharedPref(String userID, String name, String imageUrl) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("selected_listView_item", userID);
+        editor.putString("clicked_user_name", name);
+        editor.putString("clicked_user_picture", imageUrl);
+        editor.apply();
     }
 
     /**

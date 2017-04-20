@@ -1,16 +1,14 @@
-package usc.com.uscmaps.example1.shubham.fbsearch.aboutMe;
+package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.R;
-
 /**
- * Created by Shubham on 4/6/17.
+ * Created by Shubham on 4/19/17.
  */
 
-public class AboutMe extends AppCompatActivity {
+public class AboutMeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

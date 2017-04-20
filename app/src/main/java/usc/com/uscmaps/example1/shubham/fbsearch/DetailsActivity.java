@@ -2,6 +2,7 @@ package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -26,11 +27,17 @@ public class DetailsActivity extends AppCompatActivity {
     private Context mContext = this;
     private DetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
     private ViewPager viewPager;
+    String selected_item_name;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity_main);
+
+        SharedPreferences sPref= this.getSharedPreferences(MY_PREFS_NAME , MODE_PRIVATE);
+        selected_item_name = sPref.getString("clicked_user_name", "No Name");
 
         mDetailsActivitySectionsPagerAdapter = new DetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager_details_activity);
@@ -76,7 +83,7 @@ public class DetailsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Fav, nothing hooked", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.action_share_on_facebook) {
-            Toast.makeText(getApplicationContext(), "Share + SEARCHEDQUERY", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Sharing "+selected_item_name+"!", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(this, SharingActivity.class);
             startActivity(intent1);
 
@@ -102,7 +109,7 @@ public class DetailsActivity extends AppCompatActivity {
                 case 0:
                     return new DetailsFragmentAlbums();
                 case 1:
-                    return new DetailsFragmentAlbums();
+                    return new DetailsFragmentPosts();
                 default:
                     return null;
             }

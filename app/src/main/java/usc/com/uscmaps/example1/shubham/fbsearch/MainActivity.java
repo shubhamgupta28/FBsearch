@@ -21,8 +21,6 @@ import android.widget.Toast;
 import com.facebook.CallbackManager;
 import com.facebook.login.LoginManager;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.aboutMe.AboutMe;
-
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,15 +45,16 @@ public class MainActivity extends AppCompatActivity
 //        DONE
         //TODO set tab a little uplifted
         //TODO PUt NUll check for albums like in Posts
-
-
-
         //TODO change FB SDK to AWS PHP call
         //TODO Set ShareFB page
+
+
+        //TODO Add Hamburger to Favorties activity, but not to Results
         //TODO Set Favorites
         //TODO Set Places me location
         //TODO set paging in listView Results
         //TODO issue of data disappearing when tabs changed multiple times
+        //TODO Fb shared post displaying wierd, show You shared this post after sharing
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity
         startActivity(new Intent(this, FacebookActivity.class));
 
 
-        Log.e(TAG, "onCreate: "+url );
+        Log.e(TAG, "onCreate: " + url);
 //        new HttpConnectionMy(textView).execute(url);
     }
 
@@ -168,10 +167,18 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.about_me) {
-            Intent in = new Intent(this, AboutMe.class);
+            Intent in = new Intent(this, AboutMeActivity.class);
             startActivity(in);
-
         }
+        if (id == R.id.home_me) {
+            Intent in = new Intent(this, MainActivity.class);
+            startActivity(in);
+        }
+        if (id == R.id.favorites_me) {
+            Intent in = new Intent(this, FavoritesActivity.class);
+            startActivity(in);
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

@@ -12,10 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +20,8 @@ import java.util.ArrayList;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.DetailsFargmentPostsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.models.Posts;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
+import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -60,66 +58,59 @@ public class DetailsFragmentPosts extends Fragment {
      */
     private void fetchFacebookData() {
         final Context cont = this.getActivity();
+        final ArrayList<ArrayList<String>> resultsList = new ArrayList<ArrayList<String>>();
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userID = prefs.getString("selected_listView_item", "No name defined");
-        Log.e(TAG, "fetchFacebookData Posts: "+userID );
+//        Log.e(TAG, "fetchFacebookData Posts: " + userID);
 
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        GraphRequest request = GraphRequest.newGraphPathRequest(
-                accessToken, "/"+userID, new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(GraphResponse response) {
-                        Log.e(TAG, "onCompleted POSTS: "+response );
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?id=%s", userID);
+        HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
+            @Override
+            public void processFinish(JSONObject response) {
+                ArrayList<Posts> postslistJSON = new ArrayList<>();
 
-                        ArrayList<Posts> postslistJSON = new ArrayList<>();
 
-                        /**
-                         * Extract the posts
-                         */
-                        try {
-                            JSONObject imageJSON = response.getJSONObject().getJSONObject("picture").getJSONObject("data");
+                try {
+//                    Log.e(TAG, "processFinish: Posts: " + response);
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
 
-                            if(!response.getJSONObject().has("posts")){
-                                txtViewNoneFound.setVisibility(View.VISIBLE);
-                                listViewPosts.setVisibility(View.GONE);
-                            } else {
-                                JSONArray data = response.getJSONObject().getJSONObject("posts").getJSONArray("data");
-//                                Log.e(TAG, "onCompleted: " + data);
-                                int lengthJSON = response.getJSONObject().getJSONObject("posts").getJSONArray("data").length();
-
-                                for (int i = 0; i < lengthJSON; i++) {
-                                    Posts currPostObject = new Posts();
+                    JSONObject imageJSON = response.getJSONObject("picture").getJSONObject("data");
 //
-                                    JSONObject currPostJSON = data.getJSONObject(i);
-//                                    Log.e(TAG, "currPostJSON: " + currPostJSON);
+                    if (!response.has("posts")) {
+                        txtViewNoneFound.setVisibility(View.VISIBLE);
+                        listViewPosts.setVisibility(View.GONE);
+                    } else {
+                        JSONArray data = response.getJSONObject("posts").getJSONArray("data");
+                        int lengthJSON = response.getJSONObject("posts").getJSONArray("data").length();
 
-                                    currPostObject.setCreated_time(currPostJSON.getString("created_time"));
-                                    currPostObject.setHeader(response.getJSONObject().getString("name"));
-                                    currPostObject.setProfile_image(imageJSON.getString("url"));
-                                    if (currPostJSON.has("message")) {
-                                        currPostObject.setMessage(currPostJSON.getString("message"));
-                                    }
-                                    postslistJSON.add(currPostObject);
+                        for (int i = 0; i < lengthJSON; i++) {
+                            Posts currPostObject = new Posts();
+//
+                            JSONObject currPostJSON = data.getJSONObject(i);
 
-                                }
-
-                                DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, postslistJSON);
-                                listViewPosts.setAdapter(adapter);
+                            currPostObject.setCreated_time(currPostJSON.getString("created_time"));
+                            currPostObject.setHeader(response.getString("name"));
+                            currPostObject.setProfile_image(imageJSON.getString("url"));
+                            if (currPostJSON.has("message")) {
+                                currPostObject.setMessage(currPostJSON.getString("message"));
                             }
+                            postslistJSON.add(currPostObject);
 
-                        } catch (JSONException e) {
-                            Log.e(TAG, "onCompleted: Catch");
-                            Log.e(TAG, "exception" , e);
                         }
+
+                        DetailsFargmentPostsAdapter adapter = new DetailsFargmentPostsAdapter(cont, postslistJSON);
+                        listViewPosts.setAdapter(adapter);
                     }
-                });
-
-//        search?q=USC&type=user&fields=id,name,picture.width(700).height(700)
-        Bundle parameters1 = new Bundle();
-        parameters1.putString("fields", "id,name,picture.width(700).height(700)," +
-                "posts.limit(5)");
-        request.setParameters(parameters1);
-        GraphRequest.executeBatchAsync(request);
-
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCompleted: Catch");
+                    e.printStackTrace();
+                }
+            }
+        });
+        httpConn.execute(url);
     }
 }
