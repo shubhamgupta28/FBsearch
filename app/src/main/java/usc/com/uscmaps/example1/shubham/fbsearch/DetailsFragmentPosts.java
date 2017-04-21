@@ -69,21 +69,12 @@ public class DetailsFragmentPosts extends Fragment {
             @Override
             public void processFinish(JSONObject response) {
                 ArrayList<Posts> postslistJSON = new ArrayList<>();
-
-
                 try {
-//                    Log.e(TAG, "processFinish: Posts: " + response);
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
-//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
-
-                    JSONObject imageJSON = response.getJSONObject("picture").getJSONObject("data");
-//
-                    if (!response.has("posts")) {
+                    if (response == null || !response.has("posts")) {
                         txtViewNoneFound.setVisibility(View.VISIBLE);
                         listViewPosts.setVisibility(View.GONE);
                     } else {
+                        JSONObject imageJSON = response.getJSONObject("picture").getJSONObject("data");
                         JSONArray data = response.getJSONObject("posts").getJSONArray("data");
                         int lengthJSON = response.getJSONObject("posts").getJSONArray("data").length();
 

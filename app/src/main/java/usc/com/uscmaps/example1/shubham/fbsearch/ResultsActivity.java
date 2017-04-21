@@ -1,6 +1,7 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -50,13 +51,33 @@ public class ResultsActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
         }
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+//                Log.e(TAG, "onTabSelected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
+                addToSharedPref(""+tab.getPosition());
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+//                Log.e(TAG, "onTabUnselected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+//                Log.e(TAG, "onTabReselected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
+                addToSharedPref(""+tab.getPosition());
+            }
+        });
     }
 
-//    private void addToSharedPref(String active_tab) {
-//        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-//        editor.putString("active_tab", active_tab);
-//        editor.commit();
-//    }
+    private void addToSharedPref(String active_tab) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("active_tab", active_tab);
+        editor.commit();
+    }
 
 
     /**

@@ -91,7 +91,7 @@ public class DetailsFragmentAlbums extends Fragment {
             public void processFinish(JSONObject response) {
                 ArrayList<String> listJSON = new ArrayList<String>();
                 try {
-                    if (!response.has("albums")) {
+                    if (response == null || !response.has("albums")) {
                         listView.setVisibility(View.GONE);
                         txtViewNoAlbumFound.setVisibility(View.VISIBLE);
                     } else {
@@ -113,6 +113,7 @@ public class DetailsFragmentAlbums extends Fragment {
                         }
                         MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
                         listView.setAdapter(adapter);
+
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");

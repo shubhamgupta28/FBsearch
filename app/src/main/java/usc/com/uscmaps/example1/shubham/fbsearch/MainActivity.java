@@ -55,6 +55,9 @@ public class MainActivity extends AppCompatActivity
         //TODO Set Places me location
         //TODO issue of data disappearing when tabs changed multiple times
         //TODO Fb shared post displaying wierd, show You shared this post after sharing
+        //TODO back button, onBackPressed come back to the same tab
+        //TODO remove this line so that Fav stay after app close -- editor.remove("My_map").commit();
+
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -84,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 //                    fetchFacebookData(input);
 
                     Intent intent = new Intent(mContext, ResultsActivity.class);
-                    addToSharedPref(input, "user");
+                    addToSharedPref(input, "0");
 
 //                    intent.putExtra("userInput", input);
                     startActivity(intent);
@@ -122,6 +125,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("input", input);
         editor.putString("active_tab", currTab);
+        editor.remove("My_map").commit();
         editor.apply();
     }
 

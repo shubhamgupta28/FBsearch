@@ -62,7 +62,7 @@ public class ResultsFragmentEvents extends Fragment {
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userInput = prefs.getString("input", "No name defined");
         active_tab = prefs.getString("active_tab", "user");
-        Log.e(TAG, "onCreate: " + active_tab);
+//        Log.e(TAG, "onCreate: " + active_tab);
 
 //        Map<String,?> keys = prefs.getAll();
 //
@@ -131,6 +131,8 @@ public class ResultsFragmentEvents extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+//                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
+
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);

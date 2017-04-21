@@ -60,7 +60,7 @@ public class ResultsFragmentPlaces extends Fragment{
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         String userInput = prefs.getString("input", "No name defined");
         active_tab = prefs.getString("active_tab", "user");
-        Log.e(TAG, "onCreate: " + active_tab);
+//        Log.e(TAG, "onCreate: " + active_tab);
 
 //        Map<String,?> keys = prefs.getAll();
 //

@@ -19,16 +19,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 /**
  * Created by Shubham on 4/10/17.
  */
 
 public class DetailsActivity extends AppCompatActivity {
+    private String TAG = getClass().getSimpleName();
+
     private Context mContext = this;
     private DetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
     private ViewPager viewPager;
     String selected_item_name;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    SharedPreferences sPref;
+    HashMap<String, ArrayList<String>> hMap = null;
 
 
     @Override
@@ -36,7 +48,8 @@ public class DetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity_main);
 
-        SharedPreferences sPref= this.getSharedPreferences(MY_PREFS_NAME , MODE_PRIVATE);
+
+        sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         selected_item_name = sPref.getString("clicked_user_name", "No Name");
 
         mDetailsActivitySectionsPagerAdapter = new DetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
@@ -80,16 +93,96 @@ public class DetailsActivity extends AppCompatActivity {
 
         // noinspection SimplifiableIfStatement
         if (id == R.id.action_add_to_fav) {
-            Toast.makeText(getApplicationContext(), "Fav, nothing hooked", Toast.LENGTH_SHORT).show();
+
+//            Map<String, ?> keys = sPref.getAll();
+//
+//            for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//                Log.e("map values", entry.getKey() + ": " +
+//                        entry.getValue().toString());
+//            }
+
+            String active_tab = sPref.getString("active_tab", "0");
+            String clicked_user_ID = sPref.getString("selected_listView_item", null);
+//            Log.e(TAG, "active_tab: "+active_tab );
+
+            hMap = new HashMap<>();
+            hMap = loadMap();
+
+//            Log.e("detailsActivity", "onOptionsItemSelected: " + hMap );
+            if (hMap.containsKey(active_tab)) {
+//                Log.e(TAG, "containsKey: " );
+                ArrayList<String> list_of_UserID_temp = hMap.get(active_tab);
+                list_of_UserID_temp.add(clicked_user_ID);
+                hMap.put(active_tab, list_of_UserID_temp);
+            } else {
+//                Log.e(TAG, "Not containsKey: " );
+                ArrayList<String> list_of_UserID = new ArrayList<>();
+                list_of_UserID.add(clicked_user_ID);
+                hMap.put(active_tab, list_of_UserID);
+            }
+//            Log.e("detailsActivity", "onOptionsItemSelected: " + hMap );
+//            Log.e(TAG, "-------------");
+
+            saveMap(hMap);
+
             return true;
         } else if (id == R.id.action_share_on_facebook) {
-            Toast.makeText(getApplicationContext(), "Sharing "+selected_item_name+"!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Sharing " + selected_item_name + "!", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(this, SharingActivity.class);
             startActivity(intent1);
-
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Saves the clicked item ID to a Hashmap to SharedPref
+     *
+     * @param inputMap
+     */
+    private void saveMap(Map<String, ArrayList<String>> inputMap) {
+//        SharedPreferences pSharedPref = getApplicationContext().getSharedPreferences("MyVariables", Context.MODE_PRIVATE);
+        if (sPref != null) {
+            JSONObject jsonObject = new JSONObject(inputMap);
+            String jsonString = jsonObject.toString();
+            SharedPreferences.Editor editor = sPref.edit();
+            editor.remove("My_map").commit();
+            editor.putString("My_map", jsonString);
+            editor.commit();
+        }
+    }
+
+    private HashMap<String, ArrayList<String>> loadMap() {
+        HashMap<String, ArrayList<String>> currMap = new HashMap<>();
+        try {
+            if (sPref != null) {
+                String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+//                Log.e(TAG, "loadMap: "+jsonString );
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+//                    Log.e(TAG, "loadMap: key " + key);
+                    JSONArray value =  jsonObject.getJSONArray(key);
+//                    Log.e(TAG, "loadMap: value" + value );
+
+
+                    ArrayList<String> listdata = new ArrayList<String>();
+                    if (value != null) {
+                        for (int i=0;i<value.length();i++){
+                            listdata.add(value.getString(i));
+                        }
+                    }
+
+                    currMap.put(key, listdata);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        System.out.print("outputMap");
+//        System.out.print(outputMap);
+        return currMap;
     }
 
 

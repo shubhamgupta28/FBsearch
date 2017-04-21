@@ -1,6 +1,7 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -9,10 +10,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by Shubham on 4/19/17.
@@ -23,11 +31,16 @@ public class FavoritesActivity extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
     private FavoritesActivitySectionsPagerAdapter mResultActivitySectionsPagerAdapter;
     private ViewPager viewPager;
+    SharedPreferences sPref;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites_activity_main);
+
+        sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
 
         mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
 
@@ -43,6 +56,39 @@ public class FavoritesActivity extends AppCompatActivity {
             TabLayout.Tab tab = tabLayout.getTabAt(i);
             tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
         }
+
+
+//        Map<String, ?> keys = sPref.getAll();
+//
+//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//            Log.e("map values", entry.getKey() + ": " +
+//                    entry.getValue().toString());
+//        }
+        Log.e(TAG, "onCreate: Fav Acti" + loadMap());
+
+
+    }
+
+    private Map<String, Boolean> loadMap() {
+        Map<String, Boolean> outputMap = new HashMap<String, Boolean>();
+        try {
+            if (sPref != null) {
+                String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+                Log.e(TAG, "loadMap: jsonString" + jsonString);
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    Boolean value = (Boolean) jsonObject.get(key);
+                    outputMap.put(key, value);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.print("outputMap");
+        System.out.print(outputMap);
+        return outputMap;
     }
 
 
