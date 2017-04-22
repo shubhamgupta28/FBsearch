@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,14 +29,15 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * Created by Shubham on 4/10/17.
+ * Created by Shubham on 4/21/17.
  */
 
-public class DetailsActivity extends AppCompatActivity {
+public class FavDetailsActivity extends AppCompatActivity {
+
     private String TAG = getClass().getSimpleName();
 
     private Context mContext = this;
-    private DetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
+    private FavDetailsActivitySectionsPagerAdapter mDetailsActivitySectionsPagerAdapter;
     private ViewPager viewPager;
     String selected_item_name;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
@@ -52,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
         sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         selected_item_name = sPref.getString("clicked_user_name", "No Name");
 
-        mDetailsActivitySectionsPagerAdapter = new DetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
+        mDetailsActivitySectionsPagerAdapter = new FavDetailsActivitySectionsPagerAdapter(getSupportFragmentManager());
         viewPager = (ViewPager) findViewById(R.id.pager_details_activity);
         viewPager.setAdapter(mDetailsActivitySectionsPagerAdapter);
 
@@ -68,19 +70,10 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onBackPressed() {
-//
-////        super.onBackPressed();
-//        finish();
-////        getFragmentManager().popBackStack();
-//
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.details_menu, menu);
+        getMenuInflater().inflate(R.menu.details_menu_fav, menu);
         return true;
     }
 
@@ -92,7 +85,8 @@ public class DetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         // noinspection SimplifiableIfStatement
-        if (id == R.id.action_add_to_fav) {
+        if (id == R.id.action_remove_from_fav_fav) {
+            Toast.makeText(getApplicationContext(), "Remove Fav clicked", Toast.LENGTH_SHORT).show();
 
 //            Map<String, ?> keys = sPref.getAll();
 //
@@ -103,30 +97,44 @@ public class DetailsActivity extends AppCompatActivity {
 
             String active_tab = sPref.getString("active_tab", "0");
             String clicked_user_ID = sPref.getString("selected_listView_item", null);
-//            Log.e(TAG, "active_tab: "+active_tab );
+            Log.e(TAG, "clicked_user_ID: " + clicked_user_ID + "active_tab: "+active_tab );
 
             hMap = new HashMap<>();
             hMap = loadMap();
 
-//            Log.e("detailsActivity", "onOptionsItemSelected: " + hMap );
+            Log.e("detailsActivity", "onOptionsItemSelected1: " + hMap);
             if (hMap.containsKey(active_tab)) {
-//                Log.e(TAG, "containsKey: " );
+                Log.e(TAG, "containsKey: " );
                 ArrayList<String> list_of_UserID_temp = hMap.get(active_tab);
-                list_of_UserID_temp.add(clicked_user_ID);
-                hMap.put(active_tab, list_of_UserID_temp);
-            } else {
-//                Log.e(TAG, "Not containsKey: " );
-                ArrayList<String> list_of_UserID = new ArrayList<>();
-                list_of_UserID.add(clicked_user_ID);
-                hMap.put(active_tab, list_of_UserID);
+//                int index = list_of_UserID_temp.indexOf(clicked_user_ID);
+//                Log.e(TAG, "list_of_UserID_temp: "+list_of_UserID_temp );
+//                list_of_UserID_temp.remove(clicked_user_ID);
+//                Log.e(TAG, "onOptionsItemSelected: " + list_of_UserID_temp.remove(clicked_user_ID));
+//                Log.e(TAG, "list_of_UserID_temp:2 "+list_of_UserID_temp );
+
+                ArrayList<String> new_list_of_id = new ArrayList<>();
+                for (String a : list_of_UserID_temp) {
+                    if (!a.equals(clicked_user_ID)) {
+                        new_list_of_id.add(a);
+                    }
+                }
+
+                if (new_list_of_id.size() == 0) {
+                    Log.e(TAG, "onOptionsItemSelected: here" );
+                    hMap.remove(active_tab);
+                } else {
+                    Log.e(TAG, "onOptionsItemSelected: here2" );
+
+                    hMap.put(active_tab, new_list_of_id);
+                }
             }
-//            Log.e("detailsActivity", "onOptionsItemSelected: " + hMap );
-//            Log.e(TAG, "-------------");
+            Log.e("detailsActivity", "onOptionsItemSelected2: " + hMap);
+            Log.e(TAG, "-------------");
 
             saveMap(hMap);
 
             return true;
-        } else if (id == R.id.action_share_on_facebook) {
+        } else if (id == R.id.action_share_on_facebook_fav) {
             Toast.makeText(getApplicationContext(), "Sharing " + selected_item_name + "!", Toast.LENGTH_SHORT).show();
             Intent intent1 = new Intent(this, SharingActivity.class);
             startActivity(intent1);
@@ -141,7 +149,7 @@ public class DetailsActivity extends AppCompatActivity {
      * @param inputMap
      */
     private void saveMap(Map<String, ArrayList<String>> inputMap) {
-
+//        SharedPreferences pSharedPref = getApplicationContext().getSharedPreferences("MyVariables", Context.MODE_PRIVATE);
         if (sPref != null) {
             JSONObject jsonObject = new JSONObject(inputMap);
             String jsonString = jsonObject.toString();
@@ -157,23 +165,31 @@ public class DetailsActivity extends AppCompatActivity {
         try {
             if (sPref != null) {
                 String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+//                Log.e(TAG, "loadMap: "+jsonString );
                 JSONObject jsonObject = new JSONObject(jsonString);
                 Iterator<String> keysItr = jsonObject.keys();
                 while (keysItr.hasNext()) {
                     String key = keysItr.next();
-                    JSONArray value =  jsonObject.getJSONArray(key);
-                    ArrayList<String> listdata = new ArrayList<>();
+//                    Log.e(TAG, "loadMap: key " + key);
+                    JSONArray value = jsonObject.getJSONArray(key);
+//                    Log.e(TAG, "loadMap: value" + value );
+
+
+                    ArrayList<String> listdata = new ArrayList<String>();
                     if (value != null) {
-                        for (int i=0;i<value.length();i++){
+                        for (int i = 0; i < value.length(); i++) {
                             listdata.add(value.getString(i));
                         }
                     }
+
                     currMap.put(key, listdata);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+//        System.out.print("outputMap");
+//        System.out.print(outputMap);
         return currMap;
     }
 
@@ -182,9 +198,9 @@ public class DetailsActivity extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class DetailsActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class FavDetailsActivitySectionsPagerAdapter extends FragmentPagerAdapter {
 
-        public DetailsActivitySectionsPagerAdapter(FragmentManager fm) {
+        public FavDetailsActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
@@ -230,4 +246,5 @@ public class DetailsActivity extends AppCompatActivity {
             return v;
         }
     }
+
 }

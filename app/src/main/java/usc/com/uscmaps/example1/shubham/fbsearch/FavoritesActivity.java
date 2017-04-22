@@ -16,11 +16,12 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Shubham on 4/19/17.
@@ -34,13 +35,24 @@ public class FavoritesActivity extends AppCompatActivity {
     SharedPreferences sPref;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
+    private ArrayList<String> userTabList = new ArrayList<>();
+    private ArrayList<String> placesTabList = new ArrayList<>();
+    private ArrayList<String> pagesTabList = new ArrayList<>();
+    private ArrayList<String> groupsTabList = new ArrayList<>();
+    private ArrayList<String> eventsTabList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites_activity_main);
 
+        /**
+         * To set the default tab as User tab
+         */
         sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sPref.edit();
+        editor.putString("active_tab", "0");
+        editor.commit();
 
         mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
 
@@ -64,31 +76,60 @@ public class FavoritesActivity extends AppCompatActivity {
 //            Log.e("map values", entry.getKey() + ": " +
 //                    entry.getValue().toString());
 //        }
+
         Log.e(TAG, "onCreate: Fav Acti" + loadMap());
+        HashMap<String, ArrayList<String>> IDmap = loadMap();
 
-
+        for (String a : IDmap.keySet()) {
+            switch (a) {
+                case "0":
+                    userTabList = IDmap.get("0");
+                    break;
+                case "1":
+                    pagesTabList = IDmap.get("1");
+                    break;
+                case "2":
+                    eventsTabList = IDmap.get("2");
+                    break;
+                case "3":
+                    placesTabList = IDmap.get("3");
+                    break;
+                case "4":
+                    groupsTabList = IDmap.get("4");
+                    break;
+            }
+        }
     }
 
-    private Map<String, Boolean> loadMap() {
-        Map<String, Boolean> outputMap = new HashMap<String, Boolean>();
+    private HashMap<String, ArrayList<String>> loadMap() {
+        HashMap<String, ArrayList<String>> currMap = new HashMap<>();
         try {
             if (sPref != null) {
                 String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
-                Log.e(TAG, "loadMap: jsonString" + jsonString);
+//                Log.e(TAG, "loadMap: "+jsonString );
                 JSONObject jsonObject = new JSONObject(jsonString);
                 Iterator<String> keysItr = jsonObject.keys();
                 while (keysItr.hasNext()) {
                     String key = keysItr.next();
-                    Boolean value = (Boolean) jsonObject.get(key);
-                    outputMap.put(key, value);
+//                    Log.e(TAG, "loadMap: key " + key);
+                    JSONArray value = jsonObject.getJSONArray(key);
+//                    Log.e(TAG, "loadMap: value" + value );
+
+
+                    ArrayList<String> listdata = new ArrayList<>();
+                    if (value != null) {
+                        for (int i = 0; i < value.length(); i++) {
+                            listdata.add(value.getString(i));
+                        }
+                    }
+
+                    currMap.put(key, listdata);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.print("outputMap");
-        System.out.print(outputMap);
-        return outputMap;
+        return currMap;
     }
 
 
@@ -103,46 +144,66 @@ public class FavoritesActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
+
             switch (position) {
                 case 0:
-                    Fragment resultsFragmentUsers1 = new FavoritesFragmentUsers();
-//                    resultsFragmentUsers1.setRetainInstance(true);
-//                    Log.e(TAG, "getItem: 1" );
-//                    addToSharedPref("user");
-//                    resultsFragmentUsers1.setArguments(bundleForFragment);
+                    Fragment resultsFragmentUsers1;
+                    if (userTabList != null || userTabList.size() != 0) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putStringArray("userIDlist", userTabList.toArray(new String[userTabList.size()]));
+                        resultsFragmentUsers1 = new FavoritesFragmentUsers();
+                        resultsFragmentUsers1.setArguments(bundle1);
+                    } else {
+                        resultsFragmentUsers1 = new FavoritesFragmentUsers();
+                    }
                     return resultsFragmentUsers1;
 
                 case 1:
-                    Fragment resultsFragmentUsers2 = new FavoritesFragmentUsers();
-//                    Log.e(TAG, "getItem: 2" );
-
-
-//                    resultsFragmentUsers2.setArguments(bundleForFragment);
+                    Fragment resultsFragmentUsers2;
+                    if (pagesTabList != null || pagesTabList.size() != 0) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putStringArray("userIDlist", pagesTabList.toArray(new String[pagesTabList.size()]));
+                        resultsFragmentUsers2 = new FavoritesFragementPages();
+                        resultsFragmentUsers2.setArguments(bundle1);
+                    } else {
+                        resultsFragmentUsers2 = new FavoritesFragementPages();
+                    }
                     return resultsFragmentUsers2;
 
                 case 2:
-                    Fragment resultsFragmentUsers3 = new FavoritesFragmentUsers();
-//                    Log.e(TAG, "getItem: 3" );
-
-
-//                    resultsFragmentUsers3.setArguments(bundleForFragment);
+                    Fragment resultsFragmentUsers3;
+                    if (eventsTabList != null || eventsTabList.size() != 0) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putStringArray("userIDlist", eventsTabList.toArray(new String[eventsTabList.size()]));
+                        resultsFragmentUsers3 = new FavoritesFragementEvents();
+                        resultsFragmentUsers3.setArguments(bundle1);
+                    } else {
+                        resultsFragmentUsers3 = new FavoritesFragementEvents();
+                    }
                     return resultsFragmentUsers3;
 
                 case 3:
-                    Fragment resultsFragmentUsers4 = new FavoritesFragmentUsers();
-//                    Log.e(TAG, "getItem: 4" );
-
-
-//                    resultsFragmentUsers4.setArguments(bundleForFragment);
+                    Fragment resultsFragmentUsers4;
+                    if (placesTabList != null || placesTabList.size() != 0) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putStringArray("userIDlist", placesTabList.toArray(new String[placesTabList.size()]));
+                        resultsFragmentUsers4 = new FavoritesFragementPlaces();
+                        resultsFragmentUsers4.setArguments(bundle1);
+                    } else {
+                        resultsFragmentUsers4 = new FavoritesFragementPlaces();
+                    }
                     return resultsFragmentUsers4;
 
                 case 4:
-                    Fragment resultsFragmentUsers5 = new FavoritesFragmentUsers();
-//                    resultsFragmentUsers5.setRetainInstance(true);
-//                    Log.e(TAG, "getItem: 5" );
-
-
-//                    resultsFragmentUsers5.setArguments(bundleForFragment);
+                    Fragment resultsFragmentUsers5;
+                    if (groupsTabList != null || groupsTabList.size() != 0) {
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putStringArray("userIDlist", groupsTabList.toArray(new String[groupsTabList.size()]));
+                        resultsFragmentUsers5 = new FavoritesFragementGroups();
+                        resultsFragmentUsers5.setArguments(bundle1);
+                    } else {
+                        resultsFragmentUsers5 = new FavoritesFragementGroups();
+                    }
                     return resultsFragmentUsers5;
 
                 default:

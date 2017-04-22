@@ -48,15 +48,20 @@ public class MainActivity extends AppCompatActivity
         //TODO change FB SDK to AWS PHP call
         //TODO Set ShareFB page
         //TODO set paging in listView Results
-
-
-        //TODO Add Hamburger to Favorties activity, but not to Results
         //TODO Set Favorites
+        //TODO Set Favorites With remove
+
+
+        //TODO Star shine golden on FAv
+        //TODO Add Hamburger to Favorties activity, but not to Results
+        //TODO switch off next button if list <= 10
         //TODO Set Places me location
+        //TODO the Fav list ID of Events not working
         //TODO issue of data disappearing when tabs changed multiple times
         //TODO Fb shared post displaying wierd, show You shared this post after sharing
         //TODO back button, onBackPressed come back to the same tab
         //TODO remove this line so that Fav stay after app close -- editor.remove("My_map").commit();
+
 
 
 
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("input", input);
         editor.putString("active_tab", currTab);
-        editor.remove("My_map").commit();
+//        editor.remove("My_map").commit();
         editor.apply();
     }
 

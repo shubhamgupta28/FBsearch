@@ -69,6 +69,10 @@
             android:label="Favorites"
             />
 
+        <activity android:name=".FavDetailsActivity"
+            android:parentActivityName=".FavoritesActivity"
+            android:label="More Details"
+            />
 
     </application>
 

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/action_remove_from_fav_fav"
+        app:showAsAction="never"
+        android:orderInCategory="100"
+        android:title="Remove From Favorites"
+
+        />
+    <item
+        android:id="@+id/action_share_on_facebook_fav"
+        app:showAsAction="never"
+        android:orderInCategory="100"
+        android:title="Share"
+        >
+
+
+    </item>
+
+</menu>

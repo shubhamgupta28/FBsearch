@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -27,56 +26,57 @@ import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
- * Created by Shubham on 4/14/17.
+ * Created by Shubham on 4/20/17.
  */
 
-public class ResultsFragmentEvents extends Fragment {
-    ArrayList<ArrayList<String>> resultsList = null;
-    ListView listView;
-    private final String TAG = getClass().getSimpleName();
+public class FavoritesFragementGroups extends Fragment {
 
+    private ListView listView;
+    private final String TAG = getClass().getSimpleName();
     private Button btn_prev;
     private Button btn_next;
-
-    private ArrayList<String> data;
-    ArrayAdapter<String> sd;
-
     private int pageCount;
     private int increment = 0;
-
-
     public int TOTAL_LIST_ITEMS = 25;
     public int NUM_ITEMS_PAGE = 10;
-
-
+    private String userInput;
+    private ArrayList<ArrayList<String>> resultsList = null;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public static String active_tab = null;
+    private static int sizeOfListIDs = 0;
+    private int check = 0;
 
-    static final String[] MOBILE_OS_array =
-            new String[]{"Android", "iOS", "WindowsMobile", "Blackberry"};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        String[] userIDlist = null;
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            userIDlist = bundle.getStringArray("userIDlist");
+        }
+
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String userInput = prefs.getString("input", "No name defined");
-        active_tab = prefs.getString("active_tab", "user");
-//        Log.e(TAG, "onCreate: " + active_tab);
+        userInput = prefs.getString("input", "No name defined");
 
-//        Map<String,?> keys = prefs.getAll();
-//
-//        for(Map.Entry<String,?> entry : keys.entrySet()){
-//            Log.e("map values",entry.getKey() + ": " +
-//                    entry.getValue().toString());
-//        }
+//        Fav Acti{0=[1043337069143908,1043337069143908], 1=[136225076403414], 3=[222253244491192]}
 
-        fetchFacebookData(userInput);
+//        ArrayList<String> dummy = new ArrayList<>();
+//        dummy.add("1043337069143908");
+//        dummy.add("1043337069143908");
+//        Log.e(TAG, "onCreate: 12312312312" );
+//        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
+        sizeOfListIDs = userIDlist.length;
+
+        for(String currID : userIDlist)
+            fetchFacebookData(currID);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
 
         View rootView = inflater.inflate(R.layout.results_fragment_users, container, false);
 
@@ -85,7 +85,6 @@ public class ResultsFragmentEvents extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-        data = new ArrayList<>();
 
         /**
          * this block is for checking the number of pages
@@ -93,16 +92,6 @@ public class ResultsFragmentEvents extends Fragment {
         int val = TOTAL_LIST_ITEMS % 2;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
-
-
-//        /**
-//         * The ArrayList data contains all the list items
-//         */
-//        for (int i = 0; i < TOTAL_LIST_ITEMS; i++) {
-//            data.add("This is Item " + (i + 1));
-//        }
-//
-////        loadList(0);
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -121,24 +110,18 @@ public class ResultsFragmentEvents extends Fragment {
             }
         });
 
-        /**
-         * The custom adapter, right now being set after Facebook calls
-         */
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), MOBILE_OS_array);
-//        listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
 //                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+                Intent intent = new Intent(getActivity(), FavDetailsActivity.class);
                 startActivity(intent);
             }
         });
+
         return rootView;
     }
 
@@ -148,47 +131,6 @@ public class ResultsFragmentEvents extends Fragment {
         editor.putString("clicked_user_name", name);
         editor.putString("clicked_user_picture", imageUrl);
         editor.apply();
-    }
-
-    /**
-     * Facebook Async method to get JSON
-     *
-     * @param input The Input entered by the user
-     */
-    private void fetchFacebookData(String input) {
-
-        resultsList = new ArrayList<ArrayList<String>>();
-
-//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
-        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=event", input);
-        HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
-            @Override
-            public void processFinish(JSONObject response) {
-                try {
-                    int lengthJSON = response.getJSONArray("data").length();
-                    for (int i = 0; i < lengthJSON; i++) {
-                        ArrayList<String> temp = new ArrayList<>();
-
-                        JSONObject data = response.getJSONArray("data").getJSONObject(i);
-                        temp.add(data.get("name").toString());
-                        temp.add(data.get("id").toString());
-
-                        JSONObject picture = data.getJSONObject("picture");
-                        JSONObject data1 = picture.getJSONObject("data");
-//                                Log.e(TAG, "onCompleted: " + data1.get("height"));
-                        temp.add(data1.get("url").toString());
-
-                        resultsList.add(temp);
-                    }
-                    loadList(0);
-                } catch (JSONException e) {
-                    Log.e(TAG, "onCompleted: Catch");
-                    e.printStackTrace();
-                }
-            }
-        });
-        httpConn.execute(url);
-
     }
 
     /**
@@ -212,7 +154,6 @@ public class ResultsFragmentEvents extends Fragment {
      */
     private void loadList(int number) {
         final Context cont = this.getActivity();
-
         ArrayList<ArrayList<String>> sort = new ArrayList<>();
 
         int start = number * NUM_ITEMS_PAGE;
@@ -226,11 +167,63 @@ public class ResultsFragmentEvents extends Fragment {
 
         ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
         listView.setAdapter(adapter);
+    }
 
-//        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
-//        listView.setAdapter(sd);
 
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), sort);
-//        listView.setAdapter(adapter);
+    /**
+     * Facebook Async method to get JSON
+     *
+     * @param userID The ID saved in SharedPref
+     */
+    private void fetchFacebookData(String userID) {
+
+        check++;
+        final Context cont = this.getActivity();
+        resultsList = new ArrayList<>();
+
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
+//        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=user", userInput);
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?id=%s", userID);
+
+        HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
+            @Override
+            public void processFinish(JSONObject response) {
+                try {
+
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
+//                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
+
+//                    int lengthJSON = response.getJSONObject("data").length();
+//                    for (int i = 0; i < lengthJSON; i++) {
+                    ArrayList<String> temp = new ArrayList<>();
+
+//                        JSONObject data = response.getJSONArray("data").getJSONObject(i);
+                    temp.add(response.get("name").toString());
+                    temp.add(response.get("id").toString());
+
+                    JSONObject picture = response.getJSONObject("picture");
+                    JSONObject data1 = picture.getJSONObject("data");
+                    temp.add(data1.get("url").toString());
+
+                    resultsList.add(temp);
+
+//                    }
+
+                    if(check == sizeOfListIDs)
+                        loadList(0);
+//                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
+//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    listView.setAdapter(adapter);
+
+                } catch (JSONException e) {
+                    Log.e(TAG, "onCompleted: Catch");
+                    e.printStackTrace();
+                }
+            }
+        });
+        httpConn.execute(url);
+
     }
 }

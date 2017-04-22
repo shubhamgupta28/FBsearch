@@ -76,7 +76,6 @@ public class ResultsFragmentUsers extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-//        data = new ArrayList<>();
 
         /**
          * this block is for checking the number of pages
@@ -84,16 +83,6 @@ public class ResultsFragmentUsers extends Fragment {
         int val = TOTAL_LIST_ITEMS % 2;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
-
-
-//        /**
-//         * The ArrayList data contains all the list items
-//         */
-//        for (int i = 0; i < TOTAL_LIST_ITEMS; i++) {
-//            data.add("This is Item " + (i + 1));
-//        }
-//
-////        loadList(0);
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
