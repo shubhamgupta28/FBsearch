@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,9 +20,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,7 +88,6 @@ public class FavDetailsActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        // noinspection SimplifiableIfStatement
         if (id == R.id.action_remove_from_fav_fav) {
             Toast.makeText(getApplicationContext(), "Remove Fav clicked", Toast.LENGTH_SHORT).show();
 
@@ -133,6 +136,10 @@ public class FavDetailsActivity extends AppCompatActivity {
 
             saveMap(hMap);
 
+
+
+            removeActiveTabFromPrefList(active_tab);
+
             return true;
         } else if (id == R.id.action_share_on_facebook_fav) {
             Toast.makeText(getApplicationContext(), "Sharing " + selected_item_name + "!", Toast.LENGTH_SHORT).show();
@@ -142,6 +149,40 @@ public class FavDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void removeActiveTabFromPrefList(String active_tab) {
+        ArrayList<String> list_of_active_tabs = readListOfTabs();
+//        ArrayList<String> new_list_of_tabs = new ArrayList<>();
+
+        if(list_of_active_tabs.contains(active_tab)){
+            list_of_active_tabs.remove(active_tab);
+//            for (String a : list_of_active_tabs) {
+//                if (!a.equals(active_tab)) {
+//                    new_list_of_tabs.add(a);
+//                }
+//            }
+        }
+        addToListOfTabs(list_of_active_tabs);
+    }
+
+    private ArrayList<String> readListOfTabs() {
+        Gson gson = new Gson();
+        String json = sPref.getString("list_of_active_tabs", null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        ArrayList<String> arrayList = gson.fromJson(json, type);
+        return arrayList;
+    }
+
+    private void addToListOfTabs(ArrayList<String> list_of_active_tabs) {
+        SharedPreferences.Editor editor = sPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list_of_active_tabs);
+        editor.putString("list_of_active_tabs", json);
+        editor.commit();
+    }
+
+
+
 
     /**
      * Saves the clicked item ID to a Hashmap to SharedPref
@@ -195,10 +236,10 @@ public class FavDetailsActivity extends AppCompatActivity {
 
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class FavDetailsActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class FavDetailsActivitySectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public FavDetailsActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);

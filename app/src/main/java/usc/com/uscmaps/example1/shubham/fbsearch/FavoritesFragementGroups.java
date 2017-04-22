@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -165,7 +165,7 @@ public class FavoritesFragementGroups extends Fragment {
             }
         }
 
-        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
         listView.setAdapter(adapter);
     }
 
@@ -214,7 +214,7 @@ public class FavoritesFragementGroups extends Fragment {
                     if(check == sizeOfListIDs)
                         loadList(0);
 //                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
 //                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {

@@ -25,7 +25,6 @@ import java.util.List;
 public class FacebookActivity extends AppCompatActivity {
     private String TAG = getClass().getSimpleName();
 
-
     private CallbackManager callbackManager;
     private LoginManager manager;
 

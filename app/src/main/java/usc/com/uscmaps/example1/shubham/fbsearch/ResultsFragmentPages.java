@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -119,7 +119,7 @@ public class ResultsFragmentPages extends Fragment {
         /**
          * The custom adapter, right now being set after Facebook calls
          */
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), MOBILE_OS_array);
+//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), MOBILE_OS_array);
 //        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -226,13 +226,13 @@ public class ResultsFragmentPages extends Fragment {
             }
         }
 
-        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
         listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
 //        listView.setAdapter(sd);
 
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), sort);
+//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
 //        listView.setAdapter(adapter);
     }
 }

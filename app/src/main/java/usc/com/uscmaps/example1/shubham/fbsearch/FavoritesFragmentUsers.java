@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -44,7 +44,6 @@ public class FavoritesFragmentUsers extends Fragment {
     private static int sizeOfListIDs = 0;
     private int check = 0;
 
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +56,7 @@ public class FavoritesFragmentUsers extends Fragment {
 
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         userInput = prefs.getString("input", "No name defined");
+
 
 //        Fav Acti{0=[1043337069143908,1043337069143908], 1=[136225076403414], 3=[222253244491192]}
 
@@ -72,6 +72,16 @@ public class FavoritesFragmentUsers extends Fragment {
             fetchFacebookData(currID);
 
     }
+
+//    @Override
+//    public void setUserVisibleHint(boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (isVisibleToUser) {
+//            Log.e(TAG, "setUserVisibleHint: if" );
+//        }else{
+//            Log.e(TAG, "setUserVisibleHint: else" );
+//        }
+//    }
 
     @Nullable
     @Override
@@ -165,7 +175,7 @@ public class FavoritesFragmentUsers extends Fragment {
             }
         }
 
-        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
         listView.setAdapter(adapter);
     }
 
@@ -214,7 +224,7 @@ public class FavoritesFragmentUsers extends Fragment {
                     if(check == sizeOfListIDs)
                         loadList(0);
 //                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
 //                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {

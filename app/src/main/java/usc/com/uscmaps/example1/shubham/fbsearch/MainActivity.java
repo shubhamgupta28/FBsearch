@@ -10,16 +10,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.facebook.CallbackManager;
-import com.facebook.login.LoginManager;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -31,10 +26,7 @@ public class MainActivity extends AppCompatActivity
     Button btClear;
     Button btSearch;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-
-
-    private CallbackManager callbackManager;
-    private LoginManager manager;
+    protected DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,17 +42,23 @@ public class MainActivity extends AppCompatActivity
         //TODO set paging in listView Results
         //TODO Set Favorites
         //TODO Set Favorites With remove
-
-
+        //TODO collapse other albums
         //TODO Star shine golden on FAv
-        //TODO Add Hamburger to Favorties activity, but not to Results
+        //TODO check if a item is added multiple times in My_map
+        //TODO issue of data disappearing when tabs changed multiple times
+
+
+
+
+        //TODO only the current selected tabs show starred icon
         //TODO switch off next button if list <= 10
         //TODO Set Places me location
         //TODO the Fav list ID of Events not working
-        //TODO issue of data disappearing when tabs changed multiple times
         //TODO Fb shared post displaying wierd, show You shared this post after sharing
         //TODO back button, onBackPressed come back to the same tab
         //TODO remove this line so that Fav stay after app close -- editor.remove("My_map").commit();
+        //TODO Add Hamburger to Favorties activity, but not to Results
+
 
 
 
@@ -88,20 +86,16 @@ public class MainActivity extends AppCompatActivity
                 if (input.length() == 0 || input == null) {
                     Toast.makeText(getApplicationContext(), "Please enter a keyword!", Toast.LENGTH_LONG).show();
                 } else {
-                    //Call AWS for data
-//                    fetchFacebookData(input);
-
                     Intent intent = new Intent(mContext, ResultsActivity.class);
                     addToSharedPref(input, "0");
 
-//                    intent.putExtra("userInput", input);
                     startActivity(intent);
                 }
             }
         });
 
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
@@ -110,19 +104,8 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+//        startActivity(new Intent(this, FacebookActivity.class));
 
-        double lat = 40.712774, lon = -74.006091;
-        String units = "imperial";
-        String APP_ID = "212a21c6bfd9566936db301b5b629460";
-        String url = String.format("http://api.openweathermap.org/data/2.5/weather?lat=%f&lon=%f&units=%s&appid=%s",
-                lat, lon, units, APP_ID);
-
-        TextView textView = (TextView) findViewById(R.id.textView);
-        startActivity(new Intent(this, FacebookActivity.class));
-
-
-        Log.e(TAG, "onCreate: " + url);
-//        new HttpConnectionMy(textView).execute(url);
     }
 
 
@@ -131,21 +114,22 @@ public class MainActivity extends AppCompatActivity
         editor.putString("input", input);
         editor.putString("active_tab", currTab);
 //        editor.remove("My_map").commit();
+//        editor.remove("list_of_active_tabs").commit();
         editor.apply();
     }
 
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
 //    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
+
+//    @Overridew
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
 //        getMenuInflater().inflate(R.menu.main, menu);

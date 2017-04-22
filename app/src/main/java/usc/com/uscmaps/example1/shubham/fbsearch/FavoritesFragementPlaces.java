@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -58,13 +58,7 @@ public class FavoritesFragementPlaces extends Fragment{
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         userInput = prefs.getString("input", "No name defined");
 
-//        Fav Acti{0=[1043337069143908,1043337069143908], 1=[136225076403414], 3=[222253244491192]}
 
-//        ArrayList<String> dummy = new ArrayList<>();
-//        dummy.add("1043337069143908");
-//        dummy.add("1043337069143908");
-//        Log.e(TAG, "onCreate: 12312312312" );
-//        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
         sizeOfListIDs = userIDlist.length;
 
         for(String currID : userIDlist)
@@ -164,7 +158,7 @@ public class FavoritesFragementPlaces extends Fragment{
             }
         }
 
-        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
         listView.setAdapter(adapter);
     }
 
@@ -213,7 +207,7 @@ public class FavoritesFragementPlaces extends Fragment{
                     if(check == sizeOfListIDs)
                         loadList(0);
 //                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
 //                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {

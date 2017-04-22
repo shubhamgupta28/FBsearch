@@ -13,7 +13,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.Group;
+import usc.com.uscmaps.example1.shubham.fbsearch.models.Group;
 import usc.com.uscmaps.example1.shubham.fbsearch.R;
 import usc.com.uscmaps.example1.shubham.fbsearch.models.Posts;
 

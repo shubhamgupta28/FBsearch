@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -19,9 +19,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -112,7 +116,8 @@ public class DetailsActivity extends AppCompatActivity {
             if (hMap.containsKey(active_tab)) {
 //                Log.e(TAG, "containsKey: " );
                 ArrayList<String> list_of_UserID_temp = hMap.get(active_tab);
-                list_of_UserID_temp.add(clicked_user_ID);
+                if(!list_of_UserID_temp.contains(clicked_user_ID))
+                    list_of_UserID_temp.add(clicked_user_ID);
                 hMap.put(active_tab, list_of_UserID_temp);
             } else {
 //                Log.e(TAG, "Not containsKey: " );
@@ -125,6 +130,9 @@ public class DetailsActivity extends AppCompatActivity {
 
             saveMap(hMap);
 
+
+            addActiveTabToPrefList(active_tab);
+
             return true;
         } else if (id == R.id.action_share_on_facebook) {
             Toast.makeText(getApplicationContext(), "Sharing " + selected_item_name + "!", Toast.LENGTH_SHORT).show();
@@ -134,6 +142,38 @@ public class DetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void addActiveTabToPrefList(String active_tab) {
+        ArrayList<String> list_of_active_tabs = readListOfTabs();
+        if(list_of_active_tabs == null){
+            list_of_active_tabs = new ArrayList<String>();
+            list_of_active_tabs.add(active_tab);
+        }else{
+            list_of_active_tabs.add(active_tab);
+        }
+
+        addToListOfTabs(list_of_active_tabs);
+    }
+
+    private ArrayList<String> readListOfTabs() {
+        Gson gson = new Gson();
+        String json = sPref.getString("list_of_active_tabs", null);
+        Type type = new TypeToken<ArrayList<String>>() {}.getType();
+        ArrayList<String> arrayList = gson.fromJson(json, type);
+        return arrayList;
+    }
+
+    private void addToListOfTabs(ArrayList<String> list_of_active_tabs) {
+        SharedPreferences.Editor editor = sPref.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(list_of_active_tabs);
+        editor.putString("list_of_active_tabs", json);
+        editor.commit();
+    }
+
+
+
+
 
     /**
      * Saves the clicked item ID to a Hashmap to SharedPref
@@ -161,10 +201,10 @@ public class DetailsActivity extends AppCompatActivity {
                 Iterator<String> keysItr = jsonObject.keys();
                 while (keysItr.hasNext()) {
                     String key = keysItr.next();
-                    JSONArray value =  jsonObject.getJSONArray(key);
+                    JSONArray value = jsonObject.getJSONArray(key);
                     ArrayList<String> listdata = new ArrayList<>();
                     if (value != null) {
-                        for (int i=0;i<value.length();i++){
+                        for (int i = 0; i < value.length(); i++) {
                             listdata.add(value.getString(i));
                         }
                     }
@@ -179,10 +219,10 @@ public class DetailsActivity extends AppCompatActivity {
 
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class DetailsActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class DetailsActivitySectionsPagerAdapter extends FragmentStatePagerAdapter {
 
         public DetailsActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -212,7 +252,6 @@ public class DetailsActivity extends AppCompatActivity {
 
         private String tabTitles[] = new String[]{"Albums", "Posts"};
         private int[] imageResId = {R.drawable.albums, R.drawable.posts};
-
 
         /**
          * To set the tabs with custom images and text, (SectionPagerAdapter)

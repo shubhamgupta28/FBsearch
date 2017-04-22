@@ -21,6 +21,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.MyExpandableListAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.models.Group;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -37,6 +38,8 @@ public class DetailsFragmentAlbums extends Fragment {
     ExpandableListView listView;
     TextView txtViewNoAlbumFound;
     SparseArray<Group> groups = new SparseArray<Group>();
+    private int lastExpandedPosition = -1;
+
 
 
     @Override
@@ -44,31 +47,31 @@ public class DetailsFragmentAlbums extends Fragment {
         return super.onCreateAnimation(transit, enter, nextAnim);
     }
 
+
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.details_fragment_albums, container, false);
-//        createData();
         fetchFacebookData();
 
         listView = (ExpandableListView) rootview.findViewById(R.id.expandableListView_details);
-
         txtViewNoAlbumFound = (TextView) rootview.findViewById(R.id.txtView_no_albums_found);
+
+        listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedPosition != -1
+                        && groupPosition != lastExpandedPosition) {
+                    listView.collapseGroup(lastExpandedPosition);
+                }
+                lastExpandedPosition = groupPosition;
+            }
+        });
+
         return rootview;
     }
 
-//    String[] groupName = {"Timeline Photos","Cover Photos","Mobile Uploads","Profile Pictures"
-//            ,"CRS-2 Mission Photo Gallery" };
-//
-//    private void createData() {
-//        for (int j = 0; j < 5; j++) {
-//            Group group = new Group(groupName[j]);
-//            for (int i = 0; i <= 1; i++) {
-//                group.imageUrl.add("group: " + j+ "subGroup: "+i);
-//            }
-//            groups.append(j, group);
-//        }
-//    }
 
     /**
      * Facebook Async method to get JSON
@@ -113,7 +116,6 @@ public class DetailsFragmentAlbums extends Fragment {
                         }
                         MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
                         listView.setAdapter(adapter);
-
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");

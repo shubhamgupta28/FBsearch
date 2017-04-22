@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -39,7 +39,7 @@ public class ResultsActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         viewPager = (ViewPager) findViewById(R.id.pager_result_activity);
         viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
-//        viewPager.setOffscreenPageLimit(2);
+        viewPager.setOffscreenPageLimit(0);
 //        viewPager.setCurrentItem(0);
 
 
@@ -81,10 +81,10 @@ public class ResultsActivity extends AppCompatActivity {
 
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class ResultActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class ResultActivitySectionsPagerAdapter extends FragmentStatePagerAdapter {
         public ResultActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }

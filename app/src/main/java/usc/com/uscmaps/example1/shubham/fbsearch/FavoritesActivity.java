@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -46,13 +46,17 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites_activity_main);
 
+//        LayoutInflater inflater = (LayoutInflater) this
+//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View contentView = inflater.inflate(R.layout.favorites_activity_main, null, false);
+//        drawer.addView(contentView, 0);
+
+
         /**
          * To set the default tab as User tab
          */
         sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sPref.edit();
-        editor.putString("active_tab", "0");
-        editor.commit();
+        addToSharedPref("0");
 
         mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
 
@@ -99,7 +103,30 @@ public class FavoritesActivity extends AppCompatActivity {
                     break;
             }
         }
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                addToSharedPref("" + tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                addToSharedPref("" + tab.getPosition());
+            }
+        });
     }
+
+    private void addToSharedPref(String active_tab) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("active_tab", active_tab);
+        editor.commit();
+    }
+
 
     private HashMap<String, ArrayList<String>> loadMap() {
         HashMap<String, ArrayList<String>> currMap = new HashMap<>();
@@ -122,7 +149,6 @@ public class FavoritesActivity extends AppCompatActivity {
                             listdata.add(value.getString(i));
                         }
                     }
-
                     currMap.put(key, listdata);
                 }
             }
@@ -134,17 +160,16 @@ public class FavoritesActivity extends AppCompatActivity {
 
 
     /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+     * A {@link FragmentStatePagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
-    public class FavoritesActivitySectionsPagerAdapter extends FragmentPagerAdapter {
+    public class FavoritesActivitySectionsPagerAdapter extends FragmentStatePagerAdapter {
         public FavoritesActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
-
             switch (position) {
                 case 0:
                     Fragment resultsFragmentUsers1;

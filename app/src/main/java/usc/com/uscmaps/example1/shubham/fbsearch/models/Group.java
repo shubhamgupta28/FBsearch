@@ -1,4 +1,4 @@
-package usc.com.uscmaps.example1.shubham.fbsearch;
+package usc.com.uscmaps.example1.shubham.fbsearch.models;
 
 import java.util.ArrayList;
 import java.util.List;

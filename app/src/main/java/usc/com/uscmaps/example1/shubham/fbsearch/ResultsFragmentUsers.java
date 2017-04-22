@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentUsersAdapter;
+import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.HttpConnectionMy;
 
@@ -104,7 +104,7 @@ public class ResultsFragmentUsers extends Fragment {
         /**
          * The custom adapter, right now being set after Facebook calls, now being set up in AWS call
          */
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), MOBILE_OS_array);
+//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), MOBILE_OS_array);
 //        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -189,7 +189,7 @@ public class ResultsFragmentUsers extends Fragment {
 
                     loadList(0);
 //                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, resultsList);
+//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
 //                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {
@@ -262,13 +262,13 @@ public class ResultsFragmentUsers extends Fragment {
 
 
 //        Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-        ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
         listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
 //        listView.setAdapter(sd);
 
-//        final ResultFragmentUsersAdapter adapter = new ResultFragmentUsersAdapter(this.getActivity(), sort);
+//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
 //        listView.setAdapter(adapter);
     }
 }
