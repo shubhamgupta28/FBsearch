@@ -57,9 +57,8 @@ public class FavoritesFragmentUsers extends Fragment {
 
         Bundle bundle = this.getArguments();
         if (bundle != null) {
-           userIDlist = bundle.getStringArray("userIDlist");
+            userIDlist = bundle.getStringArray("userIDlist");
         }
-
 
 
         sPref = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -67,22 +66,18 @@ public class FavoritesFragmentUsers extends Fragment {
 
 
         HashMap<String, ArrayList<String>> IDmap = loadMap();
-//        userTabList = IDmap.get("0");
-        Log.e(TAG, "onCreate: lenght IDmap" +IDmap.get("0"));
 
-        if(IDmap.get(0) != null){
+        if (IDmap.get(0) != null) {
             userIDlist = IDmap.get("0").toArray(new String[IDmap.size()]);
-
         }
 
 
-        Log.e(TAG, "onCreate: userIDlist"+userIDlist.length );
+        Log.e(TAG, "onCreate: userIDlist" + userIDlist.length);
         sizeOfListIDs = userIDlist.length;
         TOTAL_LIST_ITEMS = sizeOfListIDs;
 
-        for(String currID : userIDlist)
-        fetchFacebookData(currID);
-
+        for (String currID : userIDlist)
+            fetchFacebookData(currID);
 
 
     }
@@ -113,7 +108,6 @@ public class FavoritesFragmentUsers extends Fragment {
     }
 
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -126,7 +120,7 @@ public class FavoritesFragmentUsers extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-        if( TOTAL_LIST_ITEMS < 10){
+        if (TOTAL_LIST_ITEMS < 10) {
             btn_next.setEnabled(false);
         }
 
@@ -190,8 +184,10 @@ public class FavoritesFragmentUsers extends Fragment {
             }
         }
 
-        adapter = new ResultFragmentsAdapter(cont, sort , tabNumber);
-        listView.setAdapter(adapter);
+        if (cont != null) {
+            adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 
 
@@ -222,23 +218,21 @@ public class FavoritesFragmentUsers extends Fragment {
 
 //                    int lengthJSON = response.getJSONObject("data").length();
 //                    for (int i = 0; i < lengthJSON; i++) {
-                        ArrayList<String> temp = new ArrayList<>();
+                    ArrayList<String> temp = new ArrayList<>();
 
 //                        JSONObject data = response.getJSONArray("data").getJSONObject(i);
-                        temp.add(response.get("name").toString());
-                        temp.add(response.get("id").toString());
+                    temp.add(response.get("name").toString());
+                    temp.add(response.get("id").toString());
 
-                        JSONObject picture = response.getJSONObject("picture");
-                        JSONObject data1 = picture.getJSONObject("data");
-                        temp.add(data1.get("url").toString());
+                    JSONObject picture = response.getJSONObject("picture");
+                    JSONObject data1 = picture.getJSONObject("data");
+                    temp.add(data1.get("url").toString());
 
-                        resultsList.add(temp);
-                    Log.e(TAG, "fetchFacebookData: resultlist"+resultsList );
-
+                    resultsList.add(temp);
 
 //                    }
 
-                    if(check == sizeOfListIDs)
+                    if (check == sizeOfListIDs)
                         loadList(0);
 //                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
 //                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
@@ -254,17 +248,17 @@ public class FavoritesFragmentUsers extends Fragment {
 
 
     }
-//
-//    @Override
-//    public void onResume() {
-////        Log.e(TAG, "onResume: " );
-//        super.onResume();
-//
-//        if(adapter != null) {
-//            adapter.updateList(resultsList);
-//        }
-//    }
 
+    @Override
+    public void onResume() {
+        Log.e(TAG, "onResume: ");
+        super.onResume();
+
+        if (adapter != null && resultsList != null) {
+            Log.e(TAG, "onResume: resultsList" + resultsList);
+            adapter.updateList(resultsList);
+        }
+    }
 
 
 }

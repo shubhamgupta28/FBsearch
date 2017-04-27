@@ -219,8 +219,9 @@ public class DetailsActivity extends AppCompatActivity {
 
             return true;
         } else if (id == R.id.action_share_on_facebook) {
+//            Log.e(TAG, "Sharing: "+clicked_name + " : "+ clicked_user_picture );
 
-            Toast.makeText(this, "Sharing ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Sharing "+clicked_name, Toast.LENGTH_SHORT).show();
             callbackManager = CallbackManager.Factory.create();
             shareDialog = new ShareDialog(this);
             if (shareDialog.canShow(ShareLinkContent.class)) {
@@ -236,19 +237,19 @@ public class DetailsActivity extends AppCompatActivity {
             shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                 @Override
                 public void onSuccess(Sharer.Result result) {
-                    Toast.makeText(getApplicationContext(), "You shared this post", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "onSuccess: ");
+                    Toast.makeText(getApplicationContext(), "You shared this post", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCancel() {
-                    Toast.makeText(getApplicationContext(), "Post sharing cancelled", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "onCancel: ");
+                    Toast.makeText(getApplicationContext(), "Post sharing cancelled", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onError(FacebookException error) {
-                    Log.e(TAG, "onError: ");
+                    Log.e(TAG, "onError: "+error);
 
                 }
             });

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,8 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
     private String curr_tab = null;
     private ArrayList<String> curr;
     private String tabNumber;
-    private String isStarred;
+//    private String isStarred;
+//    private boolean mShowStarredOnly = true;
 
     public ResultFragmentsAdapter(Context context, ArrayList<ArrayList<String>> values, String tabNumber) {
         super(context, R.layout.custom_view_listview_main, values);
@@ -53,9 +55,28 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
         this.tabNumber = tabNumber;
     }
 
-    public void updateList(ArrayList<ArrayList<String>> resultsList){
+    public void updateList(ArrayList<ArrayList<String>> resultsList) {
+//        Log.e(TAG, "updateList: resultlist" + resultsList );
+        ArrayList<ArrayList<String>> finalFavList = new ArrayList<>();
         values.clear();
-        values.addAll(resultsList);
+
+        for (ArrayList<String> insideResult : resultsList) {
+            if (chechStarForFav(insideResult)) {
+                values.add(insideResult);
+            }
+        }
+
+//        if(mShowStarredOnly) {
+//            for (ArrayList<String> result : resultsList) {
+//                if(result.get())
+//                values.add(result);
+//            }
+//        } else {
+//            values.addAll(resultsList);
+//        }
+
+//        Log.e(TAG, "updateList: values" + values);
+
         this.notifyDataSetChanged();
 
     }
@@ -64,48 +85,61 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
 //        Log.e(TAG, "getView: "+ position + " convertView: " + convertView + " parent: " + parent);
+        try {
+            LayoutInflater inflater = null;
+            if (mContext != null || mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) != null) {
+                inflater = (LayoutInflater) mContext
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            }
 
-        LayoutInflater inflater = (LayoutInflater) mContext
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        curr_tab = sPref.getString("active_tab", "None");
+            curr_tab = sPref.getString("active_tab", "None");
 //        Log.e(TAG, "getView: curr_tab" + curr_tab);
 
-        View rowView = inflater.inflate(R.layout.custom_view_listview_main, parent, false);
-        TextView textView = (TextView) rowView.findViewById(R.id.firstLine);
-        ImageView imgViewUser = (ImageView) rowView.findViewById(R.id.icon);
-        ImageView imgViewMoreDetails = (ImageView) rowView.findViewById(R.id.imgView_more_details);
-        ImageView imgViewStarred = (ImageView) rowView.findViewById(R.id.imgView_starred);
+            View rowView = null;
+            if (inflater != null) {
+                rowView = inflater.inflate(R.layout.custom_view_listview_main, parent, false);
 
-        imgViewMoreDetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                TextView textView = (TextView) rowView.findViewById(R.id.firstLine);
+                ImageView imgViewUser = (ImageView) rowView.findViewById(R.id.icon);
+                ImageView imgViewMoreDetails = (ImageView) rowView.findViewById(R.id.imgView_more_details);
+                ImageView imgViewStarred = (ImageView) rowView.findViewById(R.id.imgView_starred);
 
-                addLastActiveTabSharedPref(tabNumber);
+                imgViewMoreDetails.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
 
-                ArrayList<String> currList = getItem(position);
-                addToSharedPref(currList.get(1), currList.get(0), currList.get(2));
+                        addLastActiveTabSharedPref(tabNumber);
 
-                Intent intent = new Intent(mContext, DetailsActivity.class);
-                intent.putExtra("isStarred", "" + checkStarred(currList));
-                mContext.startActivity(intent);
+                        ArrayList<String> currList = getItem(position);
+                        addToSharedPref(currList.get(1), currList.get(0), currList.get(2));
+
+                        Intent intent = new Intent(mContext, DetailsActivity.class);
+                        intent.putExtra("isStarred", "" + checkStarred(currList));
+                        mContext.startActivity(intent);
+                    }
+                });
+
+
+                curr = values.get(position);
+                textView.setText(curr.get(0));
+                Picasso.with(this.getContext()).load(curr.get(2)).into(imgViewUser);
+
+                if (checkStarred()) {
+                    imgViewStarred.setImageResource(R.mipmap.favorites_on);
+                    notifyDataSetChanged();
+                } else {
+                    imgViewStarred.setImageResource(R.drawable.favorites_off);
+                }
+
             }
-        });
-
-
-        curr = values.get(position);
-        textView.setText(curr.get(0));
-        Picasso.with(this.getContext()).load(curr.get(2)).into(imgViewUser);
-
-        if (checkStarred()) {
-            imgViewStarred.setImageResource(R.mipmap.favorites_on);
-            notifyDataSetChanged();
-        } else {
-            imgViewStarred.setImageResource(R.drawable.favorites_off);
+            return rowView;
+        }
+        catch (Exception e){
+            Log.e(TAG, "getView: "+ e );
         }
 
+        return null;
 
-        return rowView;
     }
 
     private void addLastActiveTabSharedPref(String last_active_tab) {
@@ -132,6 +166,29 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
     }
 
 
+    private boolean chechStarForFav(ArrayList<String> insideResult) {
+        HashMap<String, ArrayList<String>> hMap = loadMap();
+
+        ArrayList<String> listOfTabs = readListOfTabs();
+//        Log.e(TAG, "checkStarred: listOfActiveTabs" + listOfTabs);
+
+        if (listOfTabs != null) {
+            for (String currtabfromPref : listOfTabs) {
+                if (hMap.containsKey(currtabfromPref)) {
+                    ArrayList<String> curr_fav_list = hMap.get(currtabfromPref);
+
+                    for (String a : curr_fav_list) {
+                        if (a.equals(insideResult.get(1))) {
+                            return true;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return false;
+    }
 
     /**
      * This function has a List and a Map. The list contains all tabs on which Add to Fav has been
@@ -145,7 +202,7 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
      */
     private boolean checkStarred() {
         HashMap<String, ArrayList<String>> hMap = loadMap();
-//        Log.e(TAG, "checkStarred: HashMap"+ hMap );
+//        Log.e(TAG, "checkStarred: HashMap" + hMap);
 
         ArrayList<String> listOfTabs = readListOfTabs();
 //        Log.e(TAG, "checkStarred: listOfActiveTabs" + listOfTabs);

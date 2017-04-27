@@ -52,15 +52,11 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         final String children = (String) getChild(groupPosition, childPosition);
-//        Log.e(TAG, "getChildView: "+children );
         ImageView imgView = null;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.details_fragment_albums_row_details, null);
         }
         imgView = (ImageView) convertView.findViewById(R.id.imgView_subgroup_image);
-//        imgView.setImageResource(R.mipmap.wallpaper);
-//        Picasso.with(this.activity).load("http://i.imgur.com/DvpvklR.png").into(imgView);
-//        Picasso.with(this.activity).load(R.mipmap.wallpaper).into(imgView);
         Picasso.with(this.activity).load(children).into(imgView);
 
         return convertView;
@@ -117,7 +113,4 @@ public class MyExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return false;
     }
-
-
-
 }

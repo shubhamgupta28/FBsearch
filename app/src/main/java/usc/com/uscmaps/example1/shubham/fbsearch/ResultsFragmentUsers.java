@@ -248,7 +248,7 @@ public class ResultsFragmentUsers extends Fragment {
      * @param number
      */
     private void loadList(int number) {
-         Context cont = this.getActivity();
+        Context cont = this.getActivity();
 //        Log.e(TAG, "loadList: "+resultsList.size());
 
         ArrayList<ArrayList<String>> sort = new ArrayList<>();
@@ -264,13 +264,9 @@ public class ResultsFragmentUsers extends Fragment {
 
 
 //        Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
-        listView.setAdapter(adapter);
-
-//        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
-//        listView.setAdapter(sd);
-
-//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
-//        listView.setAdapter(adapter);
+        if (cont != null) {
+            ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 }

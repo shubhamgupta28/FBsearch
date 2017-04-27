@@ -114,8 +114,10 @@ public class DetailsFragmentAlbums extends Fragment {
                             }
                             groups.append(i, group);
                         }
-                        MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
-                        listView.setAdapter(adapter);
+                        if(getActivity() != null) {
+                            MyExpandableListAdapter adapter = new MyExpandableListAdapter(getActivity(), groups);
+                            listView.setAdapter(adapter);
+                        }
                     }
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");

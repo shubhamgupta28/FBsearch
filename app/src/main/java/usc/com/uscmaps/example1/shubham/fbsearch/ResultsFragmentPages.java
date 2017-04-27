@@ -262,13 +262,9 @@ public class ResultsFragmentPages extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
-        listView.setAdapter(adapter);
-
-//        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
-//        listView.setAdapter(sd);
-
-//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
-//        listView.setAdapter(adapter);
+        if (cont != null) {
+            ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 }

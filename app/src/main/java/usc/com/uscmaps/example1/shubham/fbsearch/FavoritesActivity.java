@@ -267,6 +267,16 @@ public class FavoritesActivity extends AppCompatActivity {
 //    protected void onRestart() {
 //        Log.e(TAG, "onRestart: " );
 //        super.onRestart();
+//
+//        Fragment frg = null;
+//        frg = getSupportFragmentManager().findFragmentByTag("FavoritesFragmentUsers");
+//        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//        ft.detach(frg);
+//        ft.attach(frg);
+//        ft.commit();
+//
+////        tabs stop showing stuff
+////        mResultActivitySectionsPagerAdapter.notifyDataSetChanged();
 //    }
 
 }

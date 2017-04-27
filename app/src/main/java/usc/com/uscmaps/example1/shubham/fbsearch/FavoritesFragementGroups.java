@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
@@ -35,7 +38,7 @@ public class FavoritesFragementGroups extends Fragment {
     private Button btn_next;
     private int pageCount;
     private int increment = 0;
-    public int TOTAL_LIST_ITEMS ;
+    public int TOTAL_LIST_ITEMS;
     public int NUM_ITEMS_PAGE = 10;
     private String tabNumber = "4";
     private ResultFragmentsAdapter adapter;
@@ -46,33 +49,60 @@ public class FavoritesFragementGroups extends Fragment {
     private static int sizeOfListIDs = 0;
     private int check = 0;
 
+    SharedPreferences sPref;
+    String[] userIDlist = null;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String[] userIDlist = null;
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             userIDlist = bundle.getStringArray("userIDlist");
         }
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        userInput = prefs.getString("input", "No name defined");
+        sPref = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        userInput = sPref.getString("input", "No name defined");
 
-//        Fav Acti{0=[1043337069143908,1043337069143908], 1=[136225076403414], 3=[222253244491192]}
+        HashMap<String, ArrayList<String>> IDmap = loadMap();
 
-//        ArrayList<String> dummy = new ArrayList<>();
-//        dummy.add("1043337069143908");
-//        dummy.add("1043337069143908");
-//        Log.e(TAG, "onCreate: 12312312312" );
-//        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
+        if (IDmap.get(5) != null) {
+            userIDlist = IDmap.get("0").toArray(new String[IDmap.size()]);
+        }
+
         sizeOfListIDs = userIDlist.length;
         TOTAL_LIST_ITEMS = sizeOfListIDs;
 
-        for(String currID : userIDlist)
+        for (String currID : userIDlist)
             fetchFacebookData(currID);
 
+    }
+
+
+    private HashMap<String, ArrayList<String>> loadMap() {
+        HashMap<String, ArrayList<String>> currMap = new HashMap<>();
+        try {
+            if (sPref != null) {
+                String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    JSONArray value = jsonObject.getJSONArray(key);
+                    ArrayList<String> listdata = new ArrayList<>();
+                    if (value != null) {
+                        for (int i = 0; i < value.length(); i++) {
+                            listdata.add(value.getString(i));
+                        }
+                    }
+                    currMap.put(key, listdata);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currMap;
     }
 
     @Nullable
@@ -87,7 +117,7 @@ public class FavoritesFragementGroups extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
-        if( TOTAL_LIST_ITEMS < 10){
+        if (TOTAL_LIST_ITEMS < 10) {
             btn_next.setEnabled(false);
         }
 
@@ -178,8 +208,10 @@ public class FavoritesFragementGroups extends Fragment {
             }
         }
 
-        adapter = new ResultFragmentsAdapter(cont, sort , tabNumber);
-        listView.setAdapter(adapter);
+        if (cont != null) {
+            adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 
 
@@ -202,6 +234,7 @@ public class FavoritesFragementGroups extends Fragment {
             @Override
             public void processFinish(JSONObject response) {
                 try {
+                    if (response != null) {
 
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
@@ -210,25 +243,23 @@ public class FavoritesFragementGroups extends Fragment {
 
 //                    int lengthJSON = response.getJSONObject("data").length();
 //                    for (int i = 0; i < lengthJSON; i++) {
-                    ArrayList<String> temp = new ArrayList<>();
+                        ArrayList<String> temp = new ArrayList<>();
 
 //                        JSONObject data = response.getJSONArray("data").getJSONObject(i);
-                    temp.add(response.get("name").toString());
-                    temp.add(response.get("id").toString());
+                        Log.e(TAG, "processFinish: " + response);
+                        temp.add(response.get("name").toString());
+                        temp.add(response.get("id").toString());
 
-                    JSONObject picture = response.getJSONObject("picture");
-                    JSONObject data1 = picture.getJSONObject("data");
-                    temp.add(data1.get("url").toString());
+                        JSONObject picture = response.getJSONObject("picture");
+                        JSONObject data1 = picture.getJSONObject("data");
+                        temp.add(data1.get("url").toString());
 
-                    resultsList.add(temp);
+                        resultsList.add(temp);
 
-//                    }
 
-                    if(check == sizeOfListIDs)
-                        loadList(0);
-//                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
-//                    listView.setAdapter(adapter);
+                        if (check == sizeOfListIDs)
+                            loadList(0);
+                    }
 
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");
@@ -242,11 +273,12 @@ public class FavoritesFragementGroups extends Fragment {
 
     @Override
     public void onResume() {
-//        Log.e(TAG, "onResume: " );
+        Log.e(TAG, "onResume: ");
         super.onResume();
 
-        if(adapter != null) {
-            adapter.notifyDataSetChanged();
+        if (adapter != null && resultsList != null) {
+            Log.e(TAG, "onResume: resultsList" + resultsList);
+            adapter.updateList(resultsList);
         }
     }
 }

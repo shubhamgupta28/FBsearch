@@ -12,10 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
@@ -46,12 +49,14 @@ public class FavoritesFragementPages extends Fragment {
     private static int sizeOfListIDs = 0;
     private int check = 0;
 
+    SharedPreferences sPref;
+    String[] userIDlist = null;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String[] userIDlist = null;
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             userIDlist = bundle.getStringArray("userIDlist");
@@ -59,8 +64,14 @@ public class FavoritesFragementPages extends Fragment {
 //        Log.e(TAG, "onCreate: "+bundle +" : "+ userIDlist);
 
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        userInput = prefs.getString("input", "No name defined");
+        sPref = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        userInput = sPref.getString("input", "No name defined");
+
+        HashMap<String, ArrayList<String>> IDmap = loadMap();
+
+        if (IDmap.get(1) != null) {
+            userIDlist = IDmap.get("0").toArray(new String[IDmap.size()]);
+        }
 
 
 //        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
@@ -70,6 +81,31 @@ public class FavoritesFragementPages extends Fragment {
         for(String currID : userIDlist)
             fetchFacebookData(currID);
 
+    }
+
+    private HashMap<String, ArrayList<String>> loadMap() {
+        HashMap<String, ArrayList<String>> currMap = new HashMap<>();
+        try {
+            if (sPref != null) {
+                String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    JSONArray value = jsonObject.getJSONArray(key);
+                    ArrayList<String> listdata = new ArrayList<>();
+                    if (value != null) {
+                        for (int i = 0; i < value.length(); i++) {
+                            listdata.add(value.getString(i));
+                        }
+                    }
+                    currMap.put(key, listdata);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currMap;
     }
 
     @Nullable
@@ -149,8 +185,10 @@ public class FavoritesFragementPages extends Fragment {
             }
         }
 
-         adapter = new ResultFragmentsAdapter(cont, sort , tabNumber);
-        listView.setAdapter(adapter);
+        if (cont != null) {
+            adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 
 
@@ -212,12 +250,12 @@ public class FavoritesFragementPages extends Fragment {
     }
     @Override
     public void onResume() {
-//        Log.e(TAG, "onResume: " );
+        Log.e(TAG, "onResume: ");
         super.onResume();
-//
-//        if(adapter != null) {
-////            loadList(0);
-////            adapter.updateList(resultsList);
-//        }
+
+        if (adapter != null  && resultsList != null) {
+            Log.e(TAG, "onResume: resultsList" + resultsList);
+            adapter.updateList(resultsList);
+        }
     }
 }

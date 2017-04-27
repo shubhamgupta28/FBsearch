@@ -252,8 +252,10 @@ public class ResultsFragmentPlaces extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
-        listView.setAdapter(adapter);
+        if (cont != null) {
+            ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
 
     }
 }

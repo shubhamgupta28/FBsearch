@@ -109,7 +109,7 @@ public class ResultsFragmentEvents extends Fragment {
         int val = TOTAL_LIST_ITEMS % 10;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
-        Log.e(TAG, "processFinish: TOTAL_LIST_ITEMS"+TOTAL_LIST_ITEMS );
+//        Log.e(TAG, "processFinish: TOTAL_LIST_ITEMS"+TOTAL_LIST_ITEMS );
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -243,13 +243,9 @@ public class ResultsFragmentEvents extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
-        listView.setAdapter(adapter);
-
-//        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
-//        listView.setAdapter(sd);
-
-//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
-//        listView.setAdapter(adapter);
+        if (cont != null) {
+            ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 }

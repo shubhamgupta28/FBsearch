@@ -189,6 +189,8 @@ public class ResultsFragmentGroups extends Fragment {
             @Override
             public void processFinish(JSONObject response) {
                 try {
+
+                    Log.e(TAG, "processFinish: "+ response );
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data"));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
@@ -258,14 +260,10 @@ public class ResultsFragmentGroups extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
-        listView.setAdapter(adapter);
-
-//        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);
-//        listView.setAdapter(sd);
-
-//        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), sort);
-//        listView.setAdapter(adapter);
+        if (cont != null) {
+            ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
+            listView.setAdapter(adapter);
+        }
     }
 
 }
