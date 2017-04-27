@@ -36,13 +36,14 @@ public class FavoritesFragementEvents extends Fragment {
     private Button btn_next;
     private int pageCount;
     private int increment = 0;
-    public int TOTAL_LIST_ITEMS = 25;
+    public int TOTAL_LIST_ITEMS;
     public int NUM_ITEMS_PAGE = 10;
     private String userInput;
     private ArrayList<ArrayList<String>> resultsList = null;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     private static int sizeOfListIDs = 0;
     private int check = 0;
+//    private String userInput;
 
 
     @Override
@@ -57,11 +58,13 @@ public class FavoritesFragementEvents extends Fragment {
 //        Log.e(TAG, "onCreate: "+bundle +" : "+ userIDlist);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        userInput = prefs.getString("input", "No name defined");
+        userInput = prefs.getString("input", "Usc");
+
 
 
 //        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
         sizeOfListIDs = userIDlist.length;
+        TOTAL_LIST_ITEMS = sizeOfListIDs;
 
         for(String currID : userIDlist)
             fetchFacebookData(currID);
@@ -80,11 +83,14 @@ public class FavoritesFragementEvents extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
+        if( TOTAL_LIST_ITEMS < 10){
+            btn_next.setEnabled(false);
+        }
 
         /**
          * this block is for checking the number of pages
          */
-        int val = TOTAL_LIST_ITEMS % 2;
+        int val = TOTAL_LIST_ITEMS % 10;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
 
@@ -110,15 +116,25 @@ public class FavoritesFragementEvents extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 
+                addLastActiveTabSharedPref("2");
+
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), FavDetailsActivity.class);
                 startActivity(intent);
+
             }
         });
 
         return rootView;
     }
+
+    private void addLastActiveTabSharedPref(String last_active_tab_favorites) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("last_active_tab_favorites", last_active_tab_favorites);
+        editor.commit();
+    }
+
 
     private void addToSharedPref(String userID, String name, String imageUrl) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
@@ -176,9 +192,11 @@ public class FavoritesFragementEvents extends Fragment {
         final Context cont = this.getActivity();
         resultsList = new ArrayList<>();
 
-//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=usc&type=user
+
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?q=spacex&id=1438437049736432&type=event
+//        http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?q=spacex&id=1438437049736432&type=event
 //        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?queryString=%s&type=user", userInput);
-        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?id=%s", userID);
+        String url = String.format("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/index.php?id=%s&type=event", userID);
 
         HttpConnectionMy httpConn = new HttpConnectionMy(new AsyncResponse() {
             @Override
@@ -190,7 +208,6 @@ public class FavoritesFragementEvents extends Fragment {
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").length());
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(0));
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
-
 //                    int lengthJSON = response.getJSONObject("data").length();
 //                    for (int i = 0; i < lengthJSON; i++) {
                     ArrayList<String> temp = new ArrayList<>();
@@ -205,13 +222,9 @@ public class FavoritesFragementEvents extends Fragment {
 
                     resultsList.add(temp);
 
-//                    }
 
                     if(check == sizeOfListIDs)
                         loadList(0);
-//                    Log.e(TAG, "processFinish: "+resultsList.size()+1 );
-//                    ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, resultsList);
-//                    listView.setAdapter(adapter);
 
                 } catch (JSONException e) {
                     Log.e(TAG, "onCompleted: Catch");

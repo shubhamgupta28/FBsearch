@@ -37,7 +37,7 @@ public class FavoritesFragementGroups extends Fragment {
     private Button btn_next;
     private int pageCount;
     private int increment = 0;
-    public int TOTAL_LIST_ITEMS = 25;
+    public int TOTAL_LIST_ITEMS ;
     public int NUM_ITEMS_PAGE = 10;
     private String userInput;
     private ArrayList<ArrayList<String>> resultsList = null;
@@ -67,6 +67,7 @@ public class FavoritesFragementGroups extends Fragment {
 //        Log.e(TAG, "onCreate: 12312312312" );
 //        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
         sizeOfListIDs = userIDlist.length;
+        TOTAL_LIST_ITEMS = sizeOfListIDs;
 
         for(String currID : userIDlist)
             fetchFacebookData(currID);
@@ -85,11 +86,14 @@ public class FavoritesFragementGroups extends Fragment {
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
 
         btn_prev.setEnabled(false);
+        if( TOTAL_LIST_ITEMS < 10){
+            btn_next.setEnabled(false);
+        }
 
         /**
          * this block is for checking the number of pages
          */
-        int val = TOTAL_LIST_ITEMS % 2;
+        int val = TOTAL_LIST_ITEMS % 10;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
 
@@ -115,6 +119,8 @@ public class FavoritesFragementGroups extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 
+                addLastActiveTabSharedPref("4");
+
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), FavDetailsActivity.class);
@@ -123,6 +129,12 @@ public class FavoritesFragementGroups extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void addLastActiveTabSharedPref(String last_active_tab_favorites) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("last_active_tab_favorites", last_active_tab_favorites);
+        editor.commit();
     }
 
     private void addToSharedPref(String userID, String name, String imageUrl) {

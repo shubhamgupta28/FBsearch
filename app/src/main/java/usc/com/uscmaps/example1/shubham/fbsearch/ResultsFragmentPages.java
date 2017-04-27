@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.json.JSONException;
@@ -37,6 +38,10 @@ public class ResultsFragmentPages extends Fragment {
 
     private Button btn_prev;
     private Button btn_next;
+    LinearLayout buttonNextPrev;
+
+    private String userInput;
+
 
 //    private ArrayList<String> data;
 //    ArrayAdapter<String> sd;
@@ -50,7 +55,7 @@ public class ResultsFragmentPages extends Fragment {
 
 
     public static final String MY_PREFS_NAME = "MyPrefsFile";
-    public static String active_tab = null;
+//    public static String active_tab = null;
 
     static final String[] MOBILE_OS_array =
             new String[]{"Android", "iOS", "WindowsMobile", "Blackberry"};
@@ -58,15 +63,28 @@ public class ResultsFragmentPages extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        String userInput = prefs.getString("input", "No name defined");
-        active_tab = prefs.getString("active_tab", "user");
+         userInput = prefs.getString("input", "No name defined");
+
+
+//        Map<String, ?> keys = prefs.getAll();
+//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//            Log.e(TAG, "map values: "+ entry.getKey() + ": " +
+//                    entry.getValue().toString());
+//        }
+
+//        active_tab = prefs.getString("active_tab", "1");
 //        Log.e(TAG, "onCreate: " + active_tab);
 
-        fetchFacebookData(userInput);
+//        fetchFacebookData(userInput);
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.e(TAG, "onAttach: " );
+    }
 
 
     @Nullable
@@ -78,6 +96,11 @@ public class ResultsFragmentPages extends Fragment {
         listView = (ListView) rootView.findViewById(R.id.listView_users);
         btn_prev = (Button) rootView.findViewById(R.id.bt_prev1);
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
+        buttonNextPrev = (LinearLayout) rootView.findViewById((R.id.buttonNextPrev));
+
+        if(rootView != null){
+            fetchFacebookData(userInput);
+        }
 
         btn_prev.setEnabled(false);
 //        data = new ArrayList<>();
@@ -85,7 +108,7 @@ public class ResultsFragmentPages extends Fragment {
         /**
          * this block is for checking the number of pages
          */
-        int val = TOTAL_LIST_ITEMS % 2;
+        int val = TOTAL_LIST_ITEMS % 10;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
 
@@ -128,6 +151,9 @@ public class ResultsFragmentPages extends Fragment {
 //
 //                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 
+                addLastActiveTabSharedPref("1");
+
+
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
@@ -135,6 +161,13 @@ public class ResultsFragmentPages extends Fragment {
             }
         });
         return rootView;
+    }
+
+    private void addLastActiveTabSharedPref(String last_active_tab) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("last_active_tab", last_active_tab);
+        editor.commit();
+
     }
 
     private void addToSharedPref(String userID, String name, String imageUrl) {
@@ -166,6 +199,9 @@ public class ResultsFragmentPages extends Fragment {
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
 
                     int lengthJSON = response.getJSONArray("data").length();
+                    if(lengthJSON == 0){
+                        buttonNextPrev.setVisibility(View.GONE);
+                    }
                     for (int i = 0; i < lengthJSON; i++) {
                         ArrayList<String> temp = new ArrayList<>();
 

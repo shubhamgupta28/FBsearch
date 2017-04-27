@@ -46,18 +46,36 @@ public class MainActivity extends AppCompatActivity
         //TODO Star shine golden on FAv
         //TODO check if a item is added multiple times in My_map
         //TODO issue of data disappearing when tabs changed multiple times
-
-
-
-
         //TODO only the current selected tabs show starred icon
-        //TODO switch off next button if list <= 10
-        //TODO Set Places me location
+        //TODO Disabled button ka color change to light grey
+        //TODO switch off next button if list <= 10  in Fav
+        //TODO switch off next button if list <= 10 in Result
+        //TODO Ask if 25 have to fetched or we have to use pagination
+        //TODO Add Hamburger to Favorties activity, but not to Results
         //TODO the Fav list ID of Events not working
-        //TODO Fb shared post displaying wierd, show You shared this post after sharing
+        //TODO Refresh data after coming back
         //TODO back button, onBackPressed come back to the same tab
         //TODO remove this line so that Fav stay after app close -- editor.remove("My_map").commit();
-        //TODO Add Hamburger to Favorties activity, but not to Results
+        //TODO Fav me item still showing after remove
+
+
+
+
+
+
+
+
+
+
+
+
+        //TODO navgiation me fav icon
+        //TODO Set Places me location
+        //TODO Fb shared post displaying wierd, show You shared this post after sharing
+        //TODO show you shared this post after posting
+        //TODO quick fav me group jaane pe crash
+
+
 
 
 
@@ -104,18 +122,26 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-//        startActivity(new Intent(this, FacebookActivity.class));
-
     }
 
 
     private void addToSharedPref(String input, String currTab) {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("input", input);
+        editor.putString("last_active_tab", "0");
+        editor.putString("last_active_tab_favorites", "0");
+//        Log.e(TAG, "Adding Tab 0 to Spref" );
         editor.putString("active_tab", currTab);
+
 //        editor.remove("My_map").commit();
 //        editor.remove("list_of_active_tabs").commit();
+//        editor.remove("active_tab").commit();
+//        editor.remove("clicked_user_name").commit();
+//        editor.remove("clicked_user_picture").commit();
+//        editor.remove("selected_listView_item").commit();
+
         editor.apply();
+
     }
 
 

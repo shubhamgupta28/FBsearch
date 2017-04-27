@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import org.json.JSONException;
@@ -38,6 +39,8 @@ public class ResultsFragmentUsers extends Fragment {
     private final String TAG = getClass().getSimpleName();
     private Button btn_prev;
     private Button btn_next;
+    LinearLayout buttonNextPrev;
+
     private int pageCount;
     private int increment = 0;
     public int TOTAL_LIST_ITEMS = 25;
@@ -49,20 +52,26 @@ public class ResultsFragmentUsers extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         userInput = prefs.getString("input", "No name defined");
-//        active_tab = prefs.getString("active_tab", "user");
-//        Log.e(TAG, "onCreate: " + active_tab);
 
-//        Map<String,?> keys = prefs.getAll();
-//
-//        for(Map.Entry<String,?> entry : keys.entrySet()){
-//            Log.e("map values",entry.getKey() + ": " +
+//        Map<String, ?> keys = prefs.getAll();
+//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//            Log.e(TAG, "map values: "+ entry.getKey() + ": " +
 //                    entry.getValue().toString());
 //        }
 
-        fetchFacebookData(userInput);
+//        active_tab = prefs.getString("active_tab", "0");
+//        active_tab = prefs.getString("active_tab", "user");
+//        Log.e(TAG, "onCreate: " + active_tab);
+
+//        fetchFacebookData(userInput);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.e(TAG, "onAttach: " );
     }
 
     @Nullable
@@ -74,13 +83,18 @@ public class ResultsFragmentUsers extends Fragment {
         listView = (ListView) rootView.findViewById(R.id.listView_users);
         btn_prev = (Button) rootView.findViewById(R.id.bt_prev1);
         btn_next = (Button) rootView.findViewById(R.id.bt_next1);
+        buttonNextPrev = (LinearLayout) rootView.findViewById((R.id.buttonNextPrev));
+
+        if(rootView != null){
+            fetchFacebookData(userInput);
+        }
 
         btn_prev.setEnabled(false);
 
         /**
          * this block is for checking the number of pages
          */
-        int val = TOTAL_LIST_ITEMS % 2;
+        int val = TOTAL_LIST_ITEMS % 10;
         val = val == 0 ? 0 : 1;
         pageCount = TOTAL_LIST_ITEMS / NUM_ITEMS_PAGE + val;
 
@@ -112,6 +126,9 @@ public class ResultsFragmentUsers extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 
+                addLastActiveTabSharedPref("0");
+
+
                 ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
                 addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
                 Intent intent = new Intent(getActivity(), DetailsActivity.class);
@@ -119,15 +136,22 @@ public class ResultsFragmentUsers extends Fragment {
             }
         });
 
+
         return rootView;
     }
 
+    private void addLastActiveTabSharedPref(String last_active_tab) {
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("last_active_tab", last_active_tab);
+        editor.commit();
+
+    }
     private void addToSharedPref(String userID, String name, String imageUrl) {
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("selected_listView_item", userID);
         editor.putString("clicked_user_name", name);
         editor.putString("clicked_user_picture", imageUrl);
-        editor.apply();
+        editor.commit();
     }
 
     /**
@@ -171,6 +195,9 @@ public class ResultsFragmentUsers extends Fragment {
 //                            Log.e(TAG, "onCompleted graphresponse1: " + response.getJSONObject().getJSONArray("data").get(1));
 
                     int lengthJSON = response.getJSONArray("data").length();
+                    if(lengthJSON == 0){
+                        buttonNextPrev.setVisibility(View.GONE);
+                    }
                     for (int i = 0; i < lengthJSON; i++) {
                         ArrayList<String> temp = new ArrayList<>();
 
@@ -246,7 +273,7 @@ public class ResultsFragmentUsers extends Fragment {
      * @param number
      */
     private void loadList(int number) {
-        final Context cont = this.getActivity();
+         Context cont = this.getActivity();
 //        Log.e(TAG, "loadList: "+resultsList.size());
 
         ArrayList<ArrayList<String>> sort = new ArrayList<>();

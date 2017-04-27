@@ -72,7 +72,17 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        finish();
+    }
+
+
+
+    //
+//
+//        @Override
 //    public void onBackPressed() {
 //
 ////        super.onBackPressed();
@@ -105,7 +115,7 @@ public class DetailsActivity extends AppCompatActivity {
 //                        entry.getValue().toString());
 //            }
 
-            String active_tab = sPref.getString("active_tab", "0");
+            String active_tab = sPref.getString("active_tab", "1");
             String clicked_user_ID = sPref.getString("selected_listView_item", null);
 //            Log.e(TAG, "active_tab: "+active_tab );
 
@@ -132,6 +142,8 @@ public class DetailsActivity extends AppCompatActivity {
 
 
             addActiveTabToPrefList(active_tab);
+            Toast.makeText(getApplicationContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
+
 
             return true;
         } else if (id == R.id.action_share_on_facebook) {
@@ -140,6 +152,7 @@ public class DetailsActivity extends AppCompatActivity {
             startActivity(intent1);
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 

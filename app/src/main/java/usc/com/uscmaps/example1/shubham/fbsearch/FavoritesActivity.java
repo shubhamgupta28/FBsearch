@@ -34,6 +34,7 @@ public class FavoritesActivity extends AppCompatActivity {
     private ViewPager viewPager;
     SharedPreferences sPref;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    private String  last_active_tab_favorites;
 
     private ArrayList<String> userTabList = new ArrayList<>();
     private ArrayList<String> placesTabList = new ArrayList<>();
@@ -46,23 +47,21 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.favorites_activity_main);
 
-//        LayoutInflater inflater = (LayoutInflater) this
-//                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View contentView = inflater.inflate(R.layout.favorites_activity_main, null, false);
-//        drawer.addView(contentView, 0);
-
-
         /**
          * To set the default tab as User tab
          */
         sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         addToSharedPref("0");
+        last_active_tab_favorites = sPref.getString("last_active_tab_favorites", "0");
+
 
         mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         viewPager = (ViewPager) findViewById(R.id.pager_favorites_activity);
         viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
+        viewPager.setCurrentItem(Integer.parseInt(last_active_tab_favorites));
+
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerFavorites);
         tabLayout.setupWithViewPager(viewPager);
@@ -73,15 +72,6 @@ public class FavoritesActivity extends AppCompatActivity {
             tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
         }
 
-
-//        Map<String, ?> keys = sPref.getAll();
-//
-//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
-//            Log.e("map values", entry.getKey() + ": " +
-//                    entry.getValue().toString());
-//        }
-
-        Log.e(TAG, "onCreate: Fav Acti" + loadMap());
         HashMap<String, ArrayList<String>> IDmap = loadMap();
 
         for (String a : IDmap.keySet()) {
@@ -121,6 +111,49 @@ public class FavoritesActivity extends AppCompatActivity {
         });
     }
 
+    private void initAdapterAndTabs() {
+
+        Log.e(TAG, "Entered initAdapterAndTab: " );
+        mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
+
+        // Set up the ViewPager with the sections adapter.
+        viewPager = (ViewPager) findViewById(R.id.pager_favorites_activity);
+        viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
+
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerFavorites);
+        tabLayout.setupWithViewPager(viewPager);
+
+        // Iterate over all tabs and set the custom view
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
+        }
+
+        HashMap<String, ArrayList<String>> IDmap = loadMap();
+
+        for (String a : IDmap.keySet()) {
+            switch (a) {
+                case "0":
+                    userTabList = IDmap.get("0");
+                    break;
+                case "1":
+                    pagesTabList = IDmap.get("1");
+                    break;
+                case "2":
+                    eventsTabList = IDmap.get("2");
+                    break;
+                case "3":
+                    placesTabList = IDmap.get("3");
+                    break;
+                case "4":
+                    groupsTabList = IDmap.get("4");
+                    break;
+            }
+        }
+    }
+
+
+
     private void addToSharedPref(String active_tab) {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("active_tab", active_tab);
@@ -133,16 +166,11 @@ public class FavoritesActivity extends AppCompatActivity {
         try {
             if (sPref != null) {
                 String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
-//                Log.e(TAG, "loadMap: "+jsonString );
                 JSONObject jsonObject = new JSONObject(jsonString);
                 Iterator<String> keysItr = jsonObject.keys();
                 while (keysItr.hasNext()) {
                     String key = keysItr.next();
-//                    Log.e(TAG, "loadMap: key " + key);
                     JSONArray value = jsonObject.getJSONArray(key);
-//                    Log.e(TAG, "loadMap: value" + value );
-
-
                     ArrayList<String> listdata = new ArrayList<>();
                     if (value != null) {
                         for (int i = 0; i < value.length(); i++) {
@@ -250,7 +278,6 @@ public class FavoritesActivity extends AppCompatActivity {
         private int[] imageResId = {R.drawable.users, R.drawable.pages, R.drawable.events,
                 R.drawable.places, R.drawable.groups};
 
-
         /**
          * To set the tabs with custom images and text, (SectionPagerAdapter)
          *
@@ -267,4 +294,11 @@ public class FavoritesActivity extends AppCompatActivity {
             return v;
         }
     }
+
+//    @Override
+//    protected void onRestart() {
+//        Log.e(TAG, "onRestart: " );
+//        super.onRestart();
+////        initAdapterAndTabs();
+//    }
 }

@@ -15,7 +15,6 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.share.ShareApi;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
@@ -139,7 +138,7 @@ public class SharingActivity extends AppCompatActivity {
                     .setContentUrl(Uri.parse("http://fbsearch-env.us-west-2.elasticbeanstalk.com/index.php/"))
                     .build();
             shareDialog.show(linkContent);  // Show facebook ShareDialog
-            ShareApi.share(linkContent, null);
+//            ShareApi.share(linkContent, null);
         }
 
 

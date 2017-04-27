@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +28,11 @@ public class ResultsActivity extends AppCompatActivity {
     private Context mContext = this;
     private String newString;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    SharedPreferences sPref;
+    private String active_tab;
+    private TabLayout tabLayout;
+    //    boolean loadCurrentTab = false;
+    private String last_active_tab;
 
 
     @Override
@@ -34,16 +40,29 @@ public class ResultsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.results_activity_main);
 
+        sPref = this.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        active_tab = sPref.getString("active_tab", "None");
+        last_active_tab = sPref.getString("last_active_tab", "0");
+
+//        Log.e(TAG, "onCreate: ResultActivity last_active_tab: " + Integer.parseInt(last_active_tab));
+
+//        Map<String, ?> keys = sPref.getAll();
+//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//            Log.e(TAG, "map values: "+ entry.getKey() + ": " +
+//                    entry.getValue().toString());
+//        }
+
+
         mResultActivitySectionsPagerAdapter = new ResultActivitySectionsPagerAdapter(getSupportFragmentManager());
+//        mResultActivitySectionsPagerAdapter.notifyDataSetChanged();
 
         // Set up the ViewPager with the sections adapter.
         viewPager = (ViewPager) findViewById(R.id.pager_result_activity);
         viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
         viewPager.setOffscreenPageLimit(0);
-//        viewPager.setCurrentItem(0);
+        viewPager.setCurrentItem(Integer.parseInt(last_active_tab));
 
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainer);
+        tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainer);
         tabLayout.setupWithViewPager(viewPager);
 
         // Iterate over all tabs and set the custom view
@@ -55,28 +74,28 @@ public class ResultsActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-//                Log.e(TAG, "onTabSelected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
-                addToSharedPref(""+tab.getPosition());
-
+//                Log.e(TAG, "onTabSelected: ");
+                addToSharedPref("" + tab.getPosition());
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-//                Log.e(TAG, "onTabUnselected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
+//                Log.e(TAG, "onTabUnselected: ");
             }
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
-//                Log.e(TAG, "onTabReselected: "+ tab + " : "+ tab.getPosition() + " : "+tab.getText());
-                addToSharedPref(""+tab.getPosition());
+//                Log.e(TAG, "onTabReselected: " );
+                addToSharedPref("" + tab.getPosition());
             }
         });
+
     }
 
     private void addToSharedPref(String active_tab) {
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = sPref.edit();
         editor.putString("active_tab", active_tab);
-        editor.commit();
+        editor.apply();
     }
 
 
@@ -90,6 +109,12 @@ public class ResultsActivity extends AppCompatActivity {
         }
 
         @Override
+        public void notifyDataSetChanged() {
+            Log.e(TAG, "notifyDataSetChanged: ");
+            super.notifyDataSetChanged();
+        }
+
+        @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
@@ -98,6 +123,7 @@ public class ResultsActivity extends AppCompatActivity {
 //                    Log.e(TAG, "getItem: 1" );
 //                    addToSharedPref("user");
 //                    resultsFragmentUsers1.setArguments(bundleForFragment);
+
                     return resultsFragmentUsers1;
 
                 case 1:
@@ -134,7 +160,7 @@ public class ResultsActivity extends AppCompatActivity {
                     return resultsFragmentUsers5;
 
                 default:
-                    return null;
+                    return new ResultsFragmentUsers();
             }
         }
 
@@ -151,7 +177,6 @@ public class ResultsActivity extends AppCompatActivity {
         private String tabTitles[] = new String[]{"Users", "Pages", "Events", "Places", "Groups"};
         private int[] imageResId = {R.drawable.users, R.drawable.pages, R.drawable.events,
                 R.drawable.places, R.drawable.groups};
-
 
         /**
          * To set the tabs with custom images and text, (SectionPagerAdapter)

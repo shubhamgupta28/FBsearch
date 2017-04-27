@@ -2,7 +2,6 @@ package usc.com.uscmaps.example1.shubham.fbsearch.adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +38,9 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
     private String curr_tab = null;
     private ArrayList<String> curr;
 
-    public ResultFragmentsAdapter(Context mContext, ArrayList<ArrayList<String>> values) {
-        super(mContext, R.layout.custom_view_listview_main, values);
-        this.mContext = mContext;
+    public ResultFragmentsAdapter(Context context, ArrayList<ArrayList<String>> values) {
+        super(context, R.layout.custom_view_listview_main, values);
+        this.mContext = context;
         this.values = values;
         this.sPref = mContext.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE);
     }
@@ -67,9 +66,11 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
 
         if (checkStarred()) {
             imgViewStarred.setImageResource(R.mipmap.favorites_on);
+            notifyDataSetChanged();
         } else {
             imgViewStarred.setImageResource(R.drawable.favorites_off);
         }
+
 
         return rowView;
     }
@@ -91,7 +92,7 @@ public class ResultFragmentsAdapter extends ArrayAdapter<ArrayList<String>> {
 //        Log.e(TAG, "checkStarred: HashMap"+ hMap );
 
         ArrayList<String> listOfTabs = readListOfTabs();
-        Log.e(TAG, "checkStarred: listOfActiveTabs" + listOfTabs);
+//        Log.e(TAG, "checkStarred: listOfActiveTabs" + listOfTabs);
 
         if (listOfTabs != null) {
             for (String currtabfromPref : listOfTabs) {

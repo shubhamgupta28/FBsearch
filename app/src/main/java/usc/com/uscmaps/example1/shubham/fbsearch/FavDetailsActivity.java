@@ -89,7 +89,6 @@ public class FavDetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_remove_from_fav_fav) {
-            Toast.makeText(getApplicationContext(), "Remove Fav clicked", Toast.LENGTH_SHORT).show();
 
 //            Map<String, ?> keys = sPref.getAll();
 //
@@ -139,6 +138,8 @@ public class FavDetailsActivity extends AppCompatActivity {
 
 
             removeActiveTabFromPrefList(active_tab);
+
+            Toast.makeText(getApplicationContext(), "Remove from Favorites", Toast.LENGTH_SHORT).show();
 
             return true;
         } else if (id == R.id.action_share_on_facebook_fav) {
