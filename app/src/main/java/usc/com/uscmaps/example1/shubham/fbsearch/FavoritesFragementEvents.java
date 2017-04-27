@@ -133,7 +133,7 @@ public class FavoritesFragementEvents extends Fragment {
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.e(TAG, "clicked Next Button");
+//                Log.e(TAG, "clicked Next Button");
                 increment++;
                 loadList(increment);
                 CheckEnable();
@@ -276,11 +276,11 @@ public class FavoritesFragementEvents extends Fragment {
     }
     @Override
     public void onResume() {
-        Log.e(TAG, "onResume: ");
+//        Log.e(TAG, "onResume: ");
         super.onResume();
 
         if (adapter != null  && resultsList != null) {
-            Log.e(TAG, "onResume: resultsList" + resultsList);
+//            Log.e(TAG, "onResume: resultsList" + resultsList);
             adapter.updateList(resultsList);
         }
     }

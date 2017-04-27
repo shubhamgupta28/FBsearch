@@ -273,11 +273,11 @@ public class FavoritesFragementGroups extends Fragment {
 
     @Override
     public void onResume() {
-        Log.e(TAG, "onResume: ");
+//        Log.e(TAG, "onResume: ");
         super.onResume();
 
         if (adapter != null && resultsList != null) {
-            Log.e(TAG, "onResume: resultsList" + resultsList);
+//            Log.e(TAG, "onResume: resultsList" + resultsList);
             adapter.updateList(resultsList);
         }
     }

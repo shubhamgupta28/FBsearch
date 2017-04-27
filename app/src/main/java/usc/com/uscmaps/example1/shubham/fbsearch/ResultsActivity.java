@@ -109,7 +109,7 @@ public class ResultsActivity extends AppCompatActivity {
 
         @Override
         public void notifyDataSetChanged() {
-            Log.e(TAG, "notifyDataSetChanged: ");
+//            Log.e(TAG, "notifyDataSetChanged: ");
             super.notifyDataSetChanged();
         }
 

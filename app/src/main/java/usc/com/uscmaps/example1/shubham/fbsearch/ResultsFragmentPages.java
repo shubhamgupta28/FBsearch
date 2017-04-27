@@ -124,7 +124,7 @@ public class ResultsFragmentPages extends Fragment {
 
         btn_next.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.e(TAG, "clicked Next Button");
+//                Log.e(TAG, "clicked Next Button");
                 increment++;
                 loadList(increment);
                 CheckEnable();
@@ -219,7 +219,7 @@ public class ResultsFragmentPages extends Fragment {
                     loadList(0);
 
                 } catch (JSONException e) {
-                    Log.e(TAG, "onCompleted: Catch");
+//                    Log.e(TAG, "onCompleted: Catch");
                     e.printStackTrace();
                 }
             }

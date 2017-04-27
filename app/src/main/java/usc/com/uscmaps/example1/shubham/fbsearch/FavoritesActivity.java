@@ -79,7 +79,7 @@ public class FavoritesActivity extends AppCompatActivity {
             switch (a) {
                 case "0":
                     userTabList = IDmap.get("0");
-                    Log.e(TAG, "onCreate: userTabList"+userTabList );
+//                    Log.e(TAG, "onCreate: userTabList"+userTabList );
                     break;
                 case "1":
                     pagesTabList = IDmap.get("1");

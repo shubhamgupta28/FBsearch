@@ -118,12 +118,12 @@ public class DetailsActivity extends AppCompatActivity {
         MenuItem removeFromFav = menu.findItem(R.id.action_remove_from_fav);
 
         if (isStarred.equals("true")) {
-            Log.e("favorite", "on");
+//            Log.e("favorite", "on");
             removeFromFav.setVisible(true);
             addToFav.setVisible(false);
             invalidateOptionsMenu();
         } else {
-            Log.e("favorite", "off");
+//            Log.e("favorite", "off");
             removeFromFav.setVisible(false);
             addToFav.setVisible(true);
             invalidateOptionsMenu();
@@ -176,14 +176,14 @@ public class DetailsActivity extends AppCompatActivity {
 
             String active_tab = sPref.getString("active_tab", "0");
             String clicked_user_ID = sPref.getString("selected_listView_item", null);
-            Log.e(TAG, "clicked_user_ID: " + clicked_user_ID + "active_tab: " + active_tab);
+//            Log.e(TAG, "clicked_user_ID: " + clicked_user_ID + "active_tab: " + active_tab);
 
             hMap = new HashMap<>();
             hMap = loadMap();
 
-            Log.e("detailsActivity", "onOptionsItemSelected1: " + hMap);
+//            Log.e("detailsActivity", "onOptionsItemSelected1: " + hMap);
             if (hMap.containsKey(active_tab)) {
-                Log.e(TAG, "containsKey: ");
+//                Log.e(TAG, "containsKey: ");
                 ArrayList<String> list_of_UserID_temp = hMap.get(active_tab);
 //                int index = list_of_UserID_temp.indexOf(clicked_user_ID);
 //                Log.e(TAG, "list_of_UserID_temp: "+list_of_UserID_temp );
@@ -199,16 +199,16 @@ public class DetailsActivity extends AppCompatActivity {
                 }
 
                 if (new_list_of_id.size() == 0) {
-                    Log.e(TAG, "onOptionsItemSelected: here");
+//                    Log.e(TAG, "onOptionsItemSelected: here");
                     hMap.remove(active_tab);
                 } else {
-                    Log.e(TAG, "onOptionsItemSelected: here2");
+//                    Log.e(TAG, "onOptionsItemSelected: here2");
 
                     hMap.put(active_tab, new_list_of_id);
                 }
             }
-            Log.e("detailsActivity", "onOptionsItemSelected2: " + hMap);
-            Log.e(TAG, "-------------");
+//            Log.e("detailsActivity", "onOptionsItemSelected2: " + hMap);
+//            Log.e(TAG, "-------------");
 
             saveMap(hMap);
 
@@ -280,7 +280,7 @@ public class DetailsActivity extends AppCompatActivity {
      */
     @Override
     protected void onActivityResult(int requestCode, int responseCode, Intent data) {
-        Log.d(TAG, "onActivityResult: " + requestCode + " : " + responseCode + " :  " + data);
+//        Log.d(TAG, "onActivityResult: " + requestCode + " : " + responseCode + " :  " + data);
 
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
