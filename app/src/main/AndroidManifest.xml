@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="usc.com.uscmaps.example1.shubham.fbsearch">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 
 
@@ -14,6 +17,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider456386888038212"
+            android:exported="true" />
 
 
         <activity
@@ -27,52 +39,47 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AboutMeActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="About Me">
+        <activity
+            android:name=".AboutMeActivity"
+            android:label="About Me"
+            android:parentActivityName=".MainActivity" />
 
-        </activity>
-        <activity android:name=".ResultsActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="Result"/>
+        <activity
+            android:name=".ResultsActivity"
+            android:label="Results"
+            android:parentActivityName=".MainActivity" />
 
-        <activity android:name=".DetailsActivity"
-            android:parentActivityName=".ResultsActivity"
-            android:label="More Details"/>
-
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationName"
-            android:value="@string/app_name" />
-
-        <activity android:name="com.facebook.FacebookActivity"
-            tools:replace="android:theme"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
-
-        <activity android:name=".SharingActivity"
-            android:parentActivityName=".DetailsActivity"
-            android:label="Post To Facebook"/>
-
-        <activity android:name=".FacebookActivity"/>
-
-        <provider android:authorities="com.facebook.app.FacebookContentProvider456386888038212"
-            android:name="com.facebook.FacebookContentProvider"
-            android:exported="true" />
-
-        <activity android:name=".FavoritesActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="Favorites"
-            />
-
-        <activity android:name=".FavDetailsActivity"
-            android:parentActivityName=".FavoritesActivity"
+        <activity
+            android:name=".DetailsActivity"
             android:label="More Details"
-            />
+            android:parentActivityName=".ResultsActivity" />
+
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            tools:replace="android:theme" />
+
+
+        <!--<activity-->
+            <!--android:name=".SharingActivity"-->
+            <!--android:label="Post To Facebook"-->
+            <!--android:parentActivityName=".DetailsActivity" />-->
+
+        <!--<activity android:name=".FacebookActivity" />-->
+
+
+        <activity
+            android:name=".FavoritesActivity"
+            android:label="Favorites"
+            android:parentActivityName=".MainActivity" />
+
+        <!--<activity-->
+            <!--android:name=".FavDetailsActivity"-->
+            <!--android:label="More Details"-->
+            <!--android:parentActivityName=".FavoritesActivity" />-->
 
     </application>
 

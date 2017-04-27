@@ -1,7 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -38,6 +36,10 @@ public class FavoritesFragementPages extends Fragment {
     private int increment = 0;
     public int TOTAL_LIST_ITEMS;
     public int NUM_ITEMS_PAGE = 10;
+    private String tabNumber = "1";
+    private ResultFragmentsAdapter adapter;
+
+
     private String userInput;
     private ArrayList<ArrayList<String>> resultsList = null;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
@@ -110,35 +112,9 @@ public class FavoritesFragementPages extends Fragment {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
-
-                addLastActiveTabSharedPref("1");
-
-                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
-                Intent intent = new Intent(getActivity(), FavDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return rootView;
     }
 
-    private void addLastActiveTabSharedPref(String last_active_tab_favorites) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("last_active_tab_favorites", last_active_tab_favorites);
-        editor.commit();
-    }
-    private void addToSharedPref(String userID, String name, String imageUrl) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("selected_listView_item", userID);
-        editor.putString("clicked_user_name", name);
-        editor.putString("clicked_user_picture", imageUrl);
-        editor.apply();
-    }
 
     /**
      * Method for enabling and disabling Buttons
@@ -164,6 +140,7 @@ public class FavoritesFragementPages extends Fragment {
         ArrayList<ArrayList<String>> sort = new ArrayList<>();
 
         int start = number * NUM_ITEMS_PAGE;
+//        Log.e(TAG, "loadList: resultsList"+ resultsList );
         for (int i = start; i < (start) + NUM_ITEMS_PAGE; i++) {
             if (i < resultsList.size()) {
                 sort.add(resultsList.get(i));
@@ -172,7 +149,7 @@ public class FavoritesFragementPages extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
+         adapter = new ResultFragmentsAdapter(cont, sort , tabNumber);
         listView.setAdapter(adapter);
     }
 
@@ -232,5 +209,15 @@ public class FavoritesFragementPages extends Fragment {
         });
         httpConn.execute(url);
 
+    }
+    @Override
+    public void onResume() {
+//        Log.e(TAG, "onResume: " );
+        super.onResume();
+//
+//        if(adapter != null) {
+////            loadList(0);
+////            adapter.updateList(resultsList);
+//        }
     }
 }

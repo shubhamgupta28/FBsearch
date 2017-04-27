@@ -1,7 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,14 +9,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import usc.com.uscmaps.example1.shubham.fbsearch.adapters.ResultFragmentsAdapter;
 import usc.com.uscmaps.example1.shubham.fbsearch.util.AsyncResponse;
@@ -35,6 +36,8 @@ public class FavoritesFragmentUsers extends Fragment {
     private Button btn_prev;
     private Button btn_next;
     private int pageCount;
+    private String tabNumber = "0";
+
     private int increment = 0;
     public int TOTAL_LIST_ITEMS;
     public int NUM_ITEMS_PAGE = 10;
@@ -43,46 +46,73 @@ public class FavoritesFragmentUsers extends Fragment {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     private static int sizeOfListIDs = 0;
     private int check = 0;
+    SharedPreferences sPref;
+    private ResultFragmentsAdapter adapter;
+    String[] userIDlist = null;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String[] userIDlist = null;
+
         Bundle bundle = this.getArguments();
         if (bundle != null) {
            userIDlist = bundle.getStringArray("userIDlist");
         }
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        userInput = prefs.getString("input", "No name defined");
 
 
-//        Fav Acti{0=[1043337069143908,1043337069143908], 1=[136225076403414], 3=[222253244491192]}
+        sPref = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        userInput = sPref.getString("input", "No name defined");
 
-//        ArrayList<String> dummy = new ArrayList<>();
-//        dummy.add("1043337069143908");
-//        dummy.add("1043337069143908");
-//        Log.e(TAG, "onCreate: 12312312312" );
-//        Log.e(TAG, "userIDlist: " + Arrays.toString(userIDlist));
+
+        HashMap<String, ArrayList<String>> IDmap = loadMap();
+//        userTabList = IDmap.get("0");
+        Log.e(TAG, "onCreate: lenght IDmap" +IDmap.get("0"));
+
+        if(IDmap.get(0) != null){
+            userIDlist = IDmap.get("0").toArray(new String[IDmap.size()]);
+
+        }
+
+
+        Log.e(TAG, "onCreate: userIDlist"+userIDlist.length );
         sizeOfListIDs = userIDlist.length;
         TOTAL_LIST_ITEMS = sizeOfListIDs;
 
-
         for(String currID : userIDlist)
-            fetchFacebookData(currID);
+        fetchFacebookData(currID);
+
+
 
     }
 
-//    @Override
-//    public void setUserVisibleHint(boolean isVisibleToUser) {
-//        super.setUserVisibleHint(isVisibleToUser);
-//        if (isVisibleToUser) {
-//            Log.e(TAG, "setUserVisibleHint: if" );
-//        }else{
-//            Log.e(TAG, "setUserVisibleHint: else" );
-//        }
-//    }
+    private HashMap<String, ArrayList<String>> loadMap() {
+        HashMap<String, ArrayList<String>> currMap = new HashMap<>();
+        try {
+            if (sPref != null) {
+                String jsonString = sPref.getString("My_map", (new JSONObject()).toString());
+                JSONObject jsonObject = new JSONObject(jsonString);
+                Iterator<String> keysItr = jsonObject.keys();
+                while (keysItr.hasNext()) {
+                    String key = keysItr.next();
+                    JSONArray value = jsonObject.getJSONArray(key);
+                    ArrayList<String> listdata = new ArrayList<>();
+                    if (value != null) {
+                        for (int i = 0; i < value.length(); i++) {
+                            listdata.add(value.getString(i));
+                        }
+                    }
+                    currMap.put(key, listdata);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return currMap;
+    }
+
+
 
     @Nullable
     @Override
@@ -124,36 +154,9 @@ public class FavoritesFragmentUsers extends Fragment {
             }
         });
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
-
-                addLastActiveTabSharedPref("0");
-
-                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
-                Intent intent = new Intent(getActivity(), FavDetailsActivity.class);
-                startActivity(intent);
-            }
-        });
-
         return rootView;
     }
 
-    private void addLastActiveTabSharedPref(String last_active_tab_favorites) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("last_active_tab_favorites", last_active_tab_favorites);
-        editor.commit();
-    }
-
-    private void addToSharedPref(String userID, String name, String imageUrl) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("selected_listView_item", userID);
-        editor.putString("clicked_user_name", name);
-        editor.putString("clicked_user_picture", imageUrl);
-        editor.apply();
-    }
 
     /**
      * Method for enabling and disabling Buttons
@@ -187,7 +190,7 @@ public class FavoritesFragmentUsers extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
+        adapter = new ResultFragmentsAdapter(cont, sort , tabNumber);
         listView.setAdapter(adapter);
     }
 
@@ -230,6 +233,8 @@ public class FavoritesFragmentUsers extends Fragment {
                         temp.add(data1.get("url").toString());
 
                         resultsList.add(temp);
+                    Log.e(TAG, "fetchFacebookData: resultlist"+resultsList );
+
 
 //                    }
 
@@ -247,5 +252,19 @@ public class FavoritesFragmentUsers extends Fragment {
         });
         httpConn.execute(url);
 
+
     }
+//
+//    @Override
+//    public void onResume() {
+////        Log.e(TAG, "onResume: " );
+//        super.onResume();
+//
+//        if(adapter != null) {
+//            adapter.updateList(resultsList);
+//        }
+//    }
+
+
+
 }

@@ -1,7 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -37,6 +35,8 @@ public class ResultsFragmentEvents extends Fragment {
     private final String TAG = getClass().getSimpleName();
 
     private Button btn_prev;
+    private String tabNumber = "2";
+
     private Button btn_next;
     LinearLayout buttonNextPrev;
     private String userInput;
@@ -68,10 +68,9 @@ public class ResultsFragmentEvents extends Fragment {
 //        active_tab = prefs.getString("active_tab", "2");
 //        Log.e(TAG, "onCreate: " + active_tab);
 
-//        Map<String,?> keys = prefs.getAll();
-//
-//        for(Map.Entry<String,?> entry : keys.entrySet()){
-//            Log.e("map values",entry.getKey() + ": " +
+//        Map<String, ?> keys = prefs.getAll();
+//        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+//            Log.e(TAG, "map values: "+ entry.getKey() + ": " +
 //                    entry.getValue().toString());
 //        }
 
@@ -79,11 +78,11 @@ public class ResultsFragmentEvents extends Fragment {
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e(TAG, "onAttach: " );
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        Log.e(TAG, "onAttach: " );
+//    }
 
     @Nullable
     @Override
@@ -135,36 +134,36 @@ public class ResultsFragmentEvents extends Fragment {
 //        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), MOBILE_OS_array);
 //        listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
-//                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
-
-                addLastActiveTabSharedPref("2");
-
-                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                startActivity(intent);
-            }
-        });
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                Toast.makeText(getContext(), "clicked: " + ((TextView) view).getText(), Toast.LENGTH_SHORT).show();
+////                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
+//
+//                addLastActiveTabSharedPref("2");
+//
+//                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
+//                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
+//                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         return rootView;
     }
 
-    private void addLastActiveTabSharedPref(String last_active_tab) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("last_active_tab", last_active_tab);
-        editor.commit();
-    }
-
-    private void addToSharedPref(String userID, String name, String imageUrl) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("selected_listView_item", userID);
-        editor.putString("clicked_user_name", name);
-        editor.putString("clicked_user_picture", imageUrl);
-        editor.apply();
-    }
+//    private void addLastActiveTabSharedPref(String last_active_tab) {
+//        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+//        editor.putString("last_active_tab", last_active_tab);
+//        editor.commit();
+//    }
+//
+//    private void addToSharedPref(String userID, String name, String imageUrl) {
+//        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+//        editor.putString("selected_listView_item", userID);
+//        editor.putString("clicked_user_name", name);
+//        editor.putString("clicked_user_picture", imageUrl);
+//        editor.apply();
+//    }
 
     /**
      * Facebook Async method to get JSON
@@ -244,7 +243,7 @@ public class ResultsFragmentEvents extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
         listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);

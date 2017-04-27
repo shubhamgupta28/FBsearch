@@ -8,8 +8,15 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@mipmap/fb_icon"
+        android:src="@mipmap/ic_saksham"
         android:layout_margin="50dp"
+        android:layout_gravity="center_horizontal"
+
+        />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@mipmap/ic_saksham_usc"
         android:layout_gravity="center_horizontal"
 
         />
@@ -17,7 +24,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Shubham"
+        android:text="Saksham Mittal"
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"
         android:textColor="#000"
@@ -26,7 +33,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="3451213592"
+        android:text="7257883125"
         android:paddingTop="30dp"
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"

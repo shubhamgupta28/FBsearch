@@ -51,7 +51,7 @@ public class HttpConnectionMy extends AsyncTask<String, Object, JSONObject> {
 
             urlConnection.disconnect();
         } catch (IOException | JSONException e) {
-            Log.e("Async", "Catch doInBackground");
+//            Log.e("Async", "Catch doInBackground");
             e.printStackTrace();
         }
         return topLevel;

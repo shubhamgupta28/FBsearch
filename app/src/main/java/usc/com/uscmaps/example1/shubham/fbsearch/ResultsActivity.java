@@ -54,7 +54,6 @@ public class ResultsActivity extends AppCompatActivity {
 
 
         mResultActivitySectionsPagerAdapter = new ResultActivitySectionsPagerAdapter(getSupportFragmentManager());
-//        mResultActivitySectionsPagerAdapter.notifyDataSetChanged();
 
         // Set up the ViewPager with the sections adapter.
         viewPager = (ViewPager) findViewById(R.id.pager_result_activity);

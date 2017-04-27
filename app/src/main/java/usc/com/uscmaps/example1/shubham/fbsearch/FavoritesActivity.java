@@ -35,6 +35,7 @@ public class FavoritesActivity extends AppCompatActivity {
     SharedPreferences sPref;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
     private String  last_active_tab_favorites;
+    TabLayout tabLayout;
 
     private ArrayList<String> userTabList = new ArrayList<>();
     private ArrayList<String> placesTabList = new ArrayList<>();
@@ -61,9 +62,9 @@ public class FavoritesActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.pager_favorites_activity);
         viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
         viewPager.setCurrentItem(Integer.parseInt(last_active_tab_favorites));
+        viewPager.setOffscreenPageLimit(0);
 
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerFavorites);
+         tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerFavorites);
         tabLayout.setupWithViewPager(viewPager);
 
         // Iterate over all tabs and set the custom view
@@ -78,6 +79,7 @@ public class FavoritesActivity extends AppCompatActivity {
             switch (a) {
                 case "0":
                     userTabList = IDmap.get("0");
+                    Log.e(TAG, "onCreate: userTabList"+userTabList );
                     break;
                 case "1":
                     pagesTabList = IDmap.get("1");
@@ -109,47 +111,6 @@ public class FavoritesActivity extends AppCompatActivity {
                 addToSharedPref("" + tab.getPosition());
             }
         });
-    }
-
-    private void initAdapterAndTabs() {
-
-        Log.e(TAG, "Entered initAdapterAndTab: " );
-        mResultActivitySectionsPagerAdapter = new FavoritesActivitySectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        viewPager = (ViewPager) findViewById(R.id.pager_favorites_activity);
-        viewPager.setAdapter(mResultActivitySectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayoutContainerFavorites);
-        tabLayout.setupWithViewPager(viewPager);
-
-        // Iterate over all tabs and set the custom view
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(mResultActivitySectionsPagerAdapter.getTabView(i));
-        }
-
-        HashMap<String, ArrayList<String>> IDmap = loadMap();
-
-        for (String a : IDmap.keySet()) {
-            switch (a) {
-                case "0":
-                    userTabList = IDmap.get("0");
-                    break;
-                case "1":
-                    pagesTabList = IDmap.get("1");
-                    break;
-                case "2":
-                    eventsTabList = IDmap.get("2");
-                    break;
-                case "3":
-                    placesTabList = IDmap.get("3");
-                    break;
-                case "4":
-                    groupsTabList = IDmap.get("4");
-                    break;
-            }
-        }
     }
 
 
@@ -194,6 +155,12 @@ public class FavoritesActivity extends AppCompatActivity {
     public class FavoritesActivitySectionsPagerAdapter extends FragmentStatePagerAdapter {
         public FavoritesActivitySectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            Log.e(TAG, "notifyDataSetChanged: ");
+            super.notifyDataSetChanged();
         }
 
         @Override
@@ -260,7 +227,7 @@ public class FavoritesActivity extends AppCompatActivity {
                     return resultsFragmentUsers5;
 
                 default:
-                    return null;
+                    return new FavoritesFragmentUsers();
             }
         }
 
@@ -273,6 +240,7 @@ public class FavoritesActivity extends AppCompatActivity {
         public int getCount() {
             return 5;
         }
+
 
         private String tabTitles[] = new String[]{"Users", "Pages", "Events", "Places", "Groups"};
         private int[] imageResId = {R.drawable.users, R.drawable.pages, R.drawable.events,
@@ -299,6 +267,6 @@ public class FavoritesActivity extends AppCompatActivity {
 //    protected void onRestart() {
 //        Log.e(TAG, "onRestart: " );
 //        super.onRestart();
-////        initAdapterAndTabs();
 //    }
+
 }

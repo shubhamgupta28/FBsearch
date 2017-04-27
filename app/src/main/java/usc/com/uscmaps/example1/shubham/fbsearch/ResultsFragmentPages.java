@@ -1,7 +1,6 @@
 package usc.com.uscmaps.example1.shubham.fbsearch;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -35,6 +33,8 @@ public class ResultsFragmentPages extends Fragment {
 
     private ListView listView;
     private final String TAG = getClass().getSimpleName();
+
+    private String tabNumber = "1";
 
     private Button btn_prev;
     private Button btn_next;
@@ -80,11 +80,11 @@ public class ResultsFragmentPages extends Fragment {
     }
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Log.e(TAG, "onAttach: " );
-    }
+//    @Override
+//    public void onAttach(Context context) {
+//        super.onAttach(context);
+//        Log.e(TAG, "onAttach: " );
+//    }
 
 
     @Nullable
@@ -145,38 +145,38 @@ public class ResultsFragmentPages extends Fragment {
 //        final ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(this.getActivity(), MOBILE_OS_array);
 //        listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////
+////                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
 //
-//                Log.e(TAG, "onItemClick: "+parent+ " : " + parent.getItemAtPosition(position) + " : "+view +" : "+id + " : "+position);
-
-                addLastActiveTabSharedPref("1");
-
-
-                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
-                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
-                Intent intent = new Intent(getActivity(), DetailsActivity.class);
-                startActivity(intent);
-            }
-        });
+//                addLastActiveTabSharedPref("1");
+//
+//
+//                ArrayList<String> arr_temp = (ArrayList<String>) parent.getItemAtPosition(position);
+//                addToSharedPref(arr_temp.get(1), arr_temp.get(0), arr_temp.get(2));
+//                Intent intent = new Intent(getActivity(), DetailsActivity.class);
+//                startActivity(intent);
+//            }
+//        });
         return rootView;
     }
 
-    private void addLastActiveTabSharedPref(String last_active_tab) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("last_active_tab", last_active_tab);
-        editor.commit();
-
-    }
-
-    private void addToSharedPref(String userID, String name, String imageUrl) {
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putString("selected_listView_item", userID);
-        editor.putString("clicked_user_name", name);
-        editor.putString("clicked_user_picture", imageUrl);
-        editor.apply();
-    }
+//    private void addLastActiveTabSharedPref(String last_active_tab) {
+//        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+//        editor.putString("last_active_tab", last_active_tab);
+//        editor.commit();
+//
+//    }
+//
+//    private void addToSharedPref(String userID, String name, String imageUrl) {
+//        SharedPreferences.Editor editor = getActivity().getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+//        editor.putString("selected_listView_item", userID);
+//        editor.putString("clicked_user_name", name);
+//        editor.putString("clicked_user_picture", imageUrl);
+//        editor.apply();
+//    }
 
     /**
      * Facebook Async method to get JSON
@@ -262,7 +262,7 @@ public class ResultsFragmentPages extends Fragment {
             }
         }
 
-        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort);
+        ResultFragmentsAdapter adapter = new ResultFragmentsAdapter(cont, sort, tabNumber);
         listView.setAdapter(adapter);
 
 //        sd = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_list_item_1, sort);

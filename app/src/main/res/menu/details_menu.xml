@@ -8,7 +8,12 @@
         app:showAsAction="never"
         android:orderInCategory="100"
         android:title="Add To Favorites"
-
+        />
+    <item
+        android:id="@+id/action_remove_from_fav"
+        app:showAsAction="never"
+        android:orderInCategory="100"
+        android:title="Remove from Favorites"
         />
     <item
         android:id="@+id/action_share_on_facebook"
